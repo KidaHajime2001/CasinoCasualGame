@@ -86,8 +86,8 @@ public class Playingcards : MonoBehaviour
             playCardDataC[i].Init(Suit.club, i, clubList[i]);
         };
 
-      
-        SummonPoker(playCardDataS[1], playCardDataS[1], playCardDataS[1], playCardDataS[1], playCardDataS[1],new Vector3(0,10,0));
+      //ポーカー（5枚）分を生成
+        SummonPoker(playCardDataS[1], playCardDataS[5], playCardDataS[1], playCardDataS[1], playCardDataS[1],new Vector3(0,10,0));
     }
 
     // Update is called once per frame

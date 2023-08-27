@@ -15,8 +15,8 @@ public class ChipGenerator : MonoBehaviour
     int spawnCount = 50;         //ê∂ê¨Ç∑ÇÈêî
 
     [SerializeField]
-    Vector3 pos;         //ê∂ê¨Ç∑ÇÈêî
-
+    GameObject objPos;         //ê∂ê¨Ç∑ÇÈêî
+    Vector3 pos;
 
     [SerializeField]
     float spawnInterval = 0.1f;
@@ -31,6 +31,7 @@ public class ChipGenerator : MonoBehaviour
 
     void Start()
     {
+        pos=objPos.transform.position;
         spawnIntervalWait = new WaitForSeconds(spawnInterval);
 
         StartCoroutine(nameof(SpawnTimer));

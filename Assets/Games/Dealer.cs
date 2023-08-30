@@ -6,11 +6,11 @@ using UnityEngine.UI;
 
 public class Dealer : MonoBehaviour
 {
-    [SerializeField] GameObject gameType1;
-    [SerializeField] uint magnification1;
+    [SerializeField] GameObject leftGame;
+    [SerializeField] int leftMag;
 
-    [SerializeField] GameObject gameType2;
-    [SerializeField] uint magnification2;
+    [SerializeField] GameObject rightGame;
+    [SerializeField] int rightMag;
 
     [SerializeField] bool leftGameWinner;
     [SerializeField] bool betOnLeft;
@@ -21,6 +21,8 @@ public class Dealer : MonoBehaviour
 
     [SerializeField] GameObject betButtons;
     [SerializeField] GameObject selectButtons;
+
+    [SerializeField] Chip playerChip;
 
     // Start is called before the first frame update
     void Start()
@@ -48,9 +50,10 @@ public class Dealer : MonoBehaviour
             // プレイヤーのベットを受け付ける
             // 右か左を選択
             this.selectButtons.SetActive(true);
-
             // ベットボタンを表示
             betButtons.SetActive(true);
+
+            this.betOnLeft = this.selectButtons.GetComponent<Select>().IsSelectedLeft();
         }
         else
         {
@@ -61,6 +64,21 @@ public class Dealer : MonoBehaviour
 
             // 精算
             // (負けなら全額没収、勝ちなら倍にして返却)
+            playerChip.PassTheBet(this.betButtons.GetComponent<BetButtons>().GetBet());
+            if(betOnLeft)
+            {
+                if(this.leftGameWinner)
+                {
+                    playerChip.ReceivingBet(this.betButtons.GetComponent<BetButtons>().GetBet() * leftMag);
+                }
+            }
+            else
+            {
+                if(!this.leftGameWinner)
+                {
+                    playerChip.ReceivingBet(this.betButtons.GetComponent<BetButtons>().GetBet() * rightMag);
+                }
+            }
 
             // 良ければ次に進む処理
             if(this.selectButtons.GetComponent<Select>().IsSelectedLeft())
@@ -71,9 +89,11 @@ public class Dealer : MonoBehaviour
             {
                 Debug.Log("右に" + this.betButtons.GetComponent<BetButtons>().GetBet()+"枚");
             }
-            //this.timer = betTime;
             this.betButtons.GetComponent<BetButtons>().ResetBet();
-            this.gameObject.SetActive(false);
+            //this.gameObject.SetActive(false);
+
+            // デバッグ用(時間を戻すと再度開始)
+            this.timer = this.betTime;
         }
     }
 }

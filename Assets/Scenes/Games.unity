@@ -189,7 +189,52 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &96434436
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 96434438}
+  - component: {fileID: 96434437}
+  m_Layer: 0
+  m_Name: Chip
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &96434437
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 96434436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9484d4431c8a1343a300e794af81ca8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chip: 1000
+--- !u!4 &96434438
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 96434436}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &311675467
 GameObject:
@@ -224,6 +269,7 @@ MonoBehaviour:
   bet10: {fileID: 1776803479}
   bet100: {fileID: 828626880}
   cancel: {fileID: 0}
+  chip: {fileID: 96434437}
   bet: 0
 --- !u!4 &311675469
 Transform:
@@ -239,39 +285,7 @@ Transform:
   m_Children:
   - {fileID: 704472897}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &416268570
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 416268571}
-  m_Layer: 0
-  m_Name: Roles
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &416268571
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 416268570}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 802306834}
-  m_Father: {fileID: 1713087082}
-  m_RootOrder: -1
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &461324432
 GameObject:
@@ -779,37 +793,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 613656938}
   m_CullTransparentMesh: 1
---- !u!1 &645141212
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 645141213}
-  m_Layer: 0
-  m_Name: BlackJack
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &645141213
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 645141212}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.3510988, y: 0.8666273, z: -1.6734422}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &704472896
 GameObject:
   m_ObjectHideFlags: 0
@@ -915,98 +898,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!1001 &786996742
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 7955804061522668258, guid: 0a09f1909899b8e4c9684f8d66adbf40, type: 3}
-      propertyPath: m_RootOrder
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 7955804061522668258, guid: 0a09f1909899b8e4c9684f8d66adbf40, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 70.523605
-      objectReference: {fileID: 0}
-    - target: {fileID: 7955804061522668258, guid: 0a09f1909899b8e4c9684f8d66adbf40, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -132.90836
-      objectReference: {fileID: 0}
-    - target: {fileID: 7955804061522668258, guid: 0a09f1909899b8e4c9684f8d66adbf40, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 457.83218
-      objectReference: {fileID: 0}
-    - target: {fileID: 7955804061522668258, guid: 0a09f1909899b8e4c9684f8d66adbf40, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7955804061522668258, guid: 0a09f1909899b8e4c9684f8d66adbf40, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7955804061522668258, guid: 0a09f1909899b8e4c9684f8d66adbf40, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7955804061522668258, guid: 0a09f1909899b8e4c9684f8d66adbf40, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7955804061522668258, guid: 0a09f1909899b8e4c9684f8d66adbf40, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7955804061522668258, guid: 0a09f1909899b8e4c9684f8d66adbf40, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7955804061522668258, guid: 0a09f1909899b8e4c9684f8d66adbf40, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7955804061522668268, guid: 0a09f1909899b8e4c9684f8d66adbf40, type: 3}
-      propertyPath: m_Name
-      value: Playing cards
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 0a09f1909899b8e4c9684f8d66adbf40, type: 3}
---- !u!1 &802306833
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 802306834}
-  m_Layer: 0
-  m_Name: TwoPair
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &802306834
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 802306833}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 416268571}
-  m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &828626879
 GameObject:
   m_ObjectHideFlags: 0
@@ -1072,12 +963,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 311675468}
         m_TargetAssemblyTypeName: BetButtons, Assembly-CSharp
-        m_MethodName: Bet100
-        m_Mode: 1
+        m_MethodName: Bet
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 100
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -1138,7 +1029,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -111, y: 100}
+  m_AnchoredPosition: {x: -60, y: 100}
   m_SizeDelta: {x: 100, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1247509827
@@ -1178,7 +1069,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 111, y: 100}
+  m_AnchoredPosition: {x: 60, y: 100}
   m_SizeDelta: {x: 100, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1247509829
@@ -1265,12 +1156,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 311675468}
         m_TargetAssemblyTypeName: BetButtons, Assembly-CSharp
-        m_MethodName: Bet1
-        m_Mode: 1
+        m_MethodName: Bet
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -1771,17 +1662,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7386372e37c48643b1e84d3cbeda870, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameType1: {fileID: 0}
-  magnification1: 0
-  gameType2: {fileID: 0}
-  magnification2: 0
-  leftGameWinner: 0
+  leftGame: {fileID: 0}
+  leftMag: 3
+  rightGame: {fileID: 0}
+  rightMag: 5
+  leftGameWinner: 1
   betOnLeft: 0
   betTime: 8
   countDownTime: 3
   timer: 0
   betButtons: {fileID: 311675467}
   selectButtons: {fileID: 1934038189}
+  playerChip: {fileID: 96434437}
 --- !u!4 &1690972500
 Transform:
   m_ObjectHideFlags: 0
@@ -1932,53 +1824,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1697288310}
   m_CullTransparentMesh: 1
---- !u!1 &1713087081
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1713087082}
-  - component: {fileID: 1713087083}
-  m_Layer: 0
-  m_Name: Poker
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1713087082
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1713087081}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 416268571}
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1713087083
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1713087081}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a9f1f77ebb78774caeaf346a6687ca6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  magnification: 0
-  isWin: 0
 --- !u!1 &1776803475
 GameObject:
   m_ObjectHideFlags: 0
@@ -2103,12 +1948,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 311675468}
         m_TargetAssemblyTypeName: BetButtons, Assembly-CSharp
-        m_MethodName: Bet10
-        m_Mode: 1
+        m_MethodName: Bet
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 10
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -2292,7 +2137,7 @@ Transform:
   m_Children:
   - {fileID: 572416621}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1968088619
 GameObject:

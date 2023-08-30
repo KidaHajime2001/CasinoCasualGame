@@ -11,8 +11,9 @@ public class BetButtons : MonoBehaviour
     [SerializeField] Button bet10;
     [SerializeField] Button bet100;
     [SerializeField] Button cancel;
+    [SerializeField] Chip chip;
 
-    [SerializeField] uint bet = 0;
+    [SerializeField] int bet = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -25,7 +26,7 @@ public class BetButtons : MonoBehaviour
     {
     }
 
-    public uint GetBet()
+    public int GetBet()
     {
         return this.bet;
     }
@@ -35,18 +36,11 @@ public class BetButtons : MonoBehaviour
         this.bet = 0;
     }
 
-    public void Bet1()
+    public void Bet(int _value)
     {
-        ++bet;
-    }
-
-    public void Bet10()
-    {
-        bet += 10;
-    }
-
-    public void Bet100()
-    {
-        bet += 100;
+        if(this.chip.GetComponent<Chip>().GetChip() >= this.bet + _value)
+        {
+            this.bet += _value;
+        }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,6 +25,8 @@ public class Dealer : MonoBehaviour
 
     [SerializeField] Chip playerChip;
 
+    [SerializeField] TextMeshProUGUI countDownText;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -45,7 +48,8 @@ public class Dealer : MonoBehaviour
         // ゲームを呼出し、倍率と勝利状態を渡す。
 
         this.timer -= Time.deltaTime;
-        if (timer > 0)
+
+        if (this.timer > 0)
         {
             // プレイヤーのベットを受け付ける
             // 右か左を選択
@@ -54,11 +58,18 @@ public class Dealer : MonoBehaviour
             betButtons.SetActive(true);
 
             this.betOnLeft = this.selectButtons.GetComponent<Select>().IsSelectedLeft();
+        
+            // カウントダウンを表示する時間になったら
+            if(this.timer < this.countDownTime)
+            {
+                this.countDownText.text = Mathf.Ceil(this.timer).ToString();
+            }
         }
         else
         {
             this.selectButtons.SetActive(false);
             this.betButtons.SetActive(false);
+            this.countDownText.text = "";   // 今0が表示されない状態
 
             // 裏返っているカードを表に向ける
 

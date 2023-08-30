@@ -15,15 +15,18 @@ public class Dealer : MonoBehaviour
     [SerializeField] bool leftGameWinner;
     [SerializeField] bool betOnLeft;
 
-    [SerializeField] const float BetTime = 0;
-    [SerializeField] const float CountDownTime = 0;
+    [SerializeField] float betTime;
+    [SerializeField] float countDownTime;
     [SerializeField] float timer;
 
-    [SerializeField] BetButtons betButtons;
+    [SerializeField] GameObject betButtons;
+    [SerializeField] GameObject selectButtons;
 
     // Start is called before the first frame update
     void Start()
     {
+        this.timer = betTime;
+
         // ゲームタイプを決定(ポーカーやブラックジャック等)
 
         // 倍率を決定
@@ -35,27 +38,42 @@ public class Dealer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // ゲームを呼出し倍率と勝利状態を渡す。
+        // このゲームオブジェクトが有効化または生成されたら下の処理が実行される。
 
-        timer -= Time.deltaTime;
-        if (timer >= 0)
+        // ゲームを呼出し、倍率と勝利状態を渡す。
+
+        this.timer -= Time.deltaTime;
+        if (timer > 0)
         {
             // プレイヤーのベットを受け付ける
             // 右か左を選択
+            this.selectButtons.SetActive(true);
 
-            // 下に1,5,10のボタンを表示
-
-            // キャンセル受付
-
-            // 裏返っているカードを表に向ける
-
-            // 負けなら全額没収
-            // 価値なら倍にして返却
+            // ベットボタンを表示
+            betButtons.SetActive(true);
         }
         else
         {
-            this.timer = BetTime;
-            this.betButtons.ResetBet();
+            this.selectButtons.SetActive(false);
+            this.betButtons.SetActive(false);
+
+            // 裏返っているカードを表に向ける
+
+            // 精算
+            // (負けなら全額没収、勝ちなら倍にして返却)
+
+            // 良ければ次に進む処理
+            if(this.selectButtons.GetComponent<Select>().IsSelectedLeft())
+            {
+                Debug.Log("左に"+ this.betButtons.GetComponent<BetButtons>().GetBet()+"枚");
+            }
+            else
+            {
+                Debug.Log("右に" + this.betButtons.GetComponent<BetButtons>().GetBet()+"枚");
+            }
+            //this.timer = betTime;
+            this.betButtons.GetComponent<BetButtons>().ResetBet();
+            this.gameObject.SetActive(false);
         }
     }
 }

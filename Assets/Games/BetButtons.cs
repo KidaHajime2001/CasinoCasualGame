@@ -10,13 +10,14 @@ public class BetButtons : MonoBehaviour
     [SerializeField] Button bet1;
     [SerializeField] Button bet10;
     [SerializeField] Button bet100;
+    [SerializeField] Button cancel;
 
-    [SerializeField] uint bet;
+    [SerializeField] uint bet = 0;
 
     // Start is called before the first frame update
     void Start()
     {
-        bet = 0;
+        this.gameObject.SetActive(false);
     }
 
     // Update is called once per frame

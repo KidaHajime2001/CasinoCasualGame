@@ -7,10 +7,10 @@ using UnityEngine.UI;
 
 public class Dealer : MonoBehaviour
 {
-    [SerializeField] GameObject leftGame;
+    //[SerializeField] GameObject leftGame;
     [SerializeField] int leftMag;
 
-    [SerializeField] GameObject rightGame;
+    //[SerializeField] GameObject rightGame;
     [SerializeField] int rightMag;
 
     [SerializeField] bool leftGameWinner;

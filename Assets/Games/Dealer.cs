@@ -37,6 +37,8 @@ public class Dealer : MonoBehaviour
 
         // キャンセル受付
 
+        // 裏返っているカードを表に向ける
+
         // 負けなら全額没収
         // 価値なら倍にして返却
     }

@@ -9,25 +9,35 @@ public class Poker : MonoBehaviour
 {
     [SerializeField] uint magnification;
     [SerializeField] bool isWin;
+
+    enum Type
+    {
+        Spade,
+        Heart,
+        Diamond,
+        Club,
+        Joker
+    };
+    struct Card
+    {
+        Type type;
+        uint number;
+    };
+
     struct Role
     {
-        uint magnification;
-        bool isWin;
-
-        GameObject first;
-        GameObject second;
-        GameObject third;
-        GameObject fourth;
-        GameObject fifth;
+        Card first;
+        Card second;
+        Card third;
+        Card fourth;
+        Card fifth;
     }
     // ツーペア2
-    [SerializeField] Role two;
-    [SerializeField] Role missingTwo;
+    [SerializeField] Role twoPair;
+    [SerializeField] Role missTwoPair;
     // スリーカード3
-    [SerializeField] Role three;
-    [SerializeField] Role missingThree;
-
-
+    [SerializeField] Role threeCard;
+    [SerializeField] Role missThreeCard;
 
     // ストレート4
 

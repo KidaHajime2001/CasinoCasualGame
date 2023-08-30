@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Dealer : MonoBehaviour
 {
@@ -13,6 +14,12 @@ public class Dealer : MonoBehaviour
 
     [SerializeField] bool leftGameWinner;
     [SerializeField] bool betOnLeft;
+
+    [SerializeField] const float BetTime = 0;
+    [SerializeField] const float CountDownTime = 0;
+    [SerializeField] float timer;
+
+    [SerializeField] BetButtons betButtons;
 
     // Start is called before the first frame update
     void Start()
@@ -30,16 +37,25 @@ public class Dealer : MonoBehaviour
     {
         // ゲームを呼出し倍率と勝利状態を渡す。
 
-        // プレイヤーのベットを受け付ける
-        // 右か左を選択
+        timer -= Time.deltaTime;
+        if (timer >= 0)
+        {
+            // プレイヤーのベットを受け付ける
+            // 右か左を選択
 
-        // 下に1,5,10のボタンを表示
+            // 下に1,5,10のボタンを表示
 
-        // キャンセル受付
+            // キャンセル受付
 
-        // 裏返っているカードを表に向ける
+            // 裏返っているカードを表に向ける
 
-        // 負けなら全額没収
-        // 価値なら倍にして返却
+            // 負けなら全額没収
+            // 価値なら倍にして返却
+        }
+        else
+        {
+            this.timer = BetTime;
+            this.betButtons.ResetBet();
+        }
     }
 }

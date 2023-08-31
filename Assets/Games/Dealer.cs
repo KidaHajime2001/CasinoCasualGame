@@ -32,33 +32,24 @@ public class Dealer : MonoBehaviour
     void Start()
     {
         this.timer = betTime;
-
         // ゲームタイプを決定(ポーカーやブラックジャック等)
-        // 今は仮置きで決まったゲームが設定。
         this.SelectGames();
-
-        // 倍率を決定
+        // 倍率を決定＆ゲームに設定する。
+        this.SelectMagnification();
     }
 
     // Update is called once per frame
     void Update()
     {
-        // このゲームオブジェクトが有効化または生成されたら下の処理が実行される。
-
-        // ゲームを呼出し、倍率と勝利状態を渡す。
-
-        this.timer -= Time.deltaTime;
+        // ベットされている量を表示
         this.betText.text = "Bet : "+this.betButtons.GetComponent<BetButtons>().GetBet().ToString();
 
+        // 時間制限内なら
         if (this.timer > 0)
         {
-            // プレイヤーのベットを受け付ける
-            // 右か左を選択
-            this.selectButtons.SetActive(true);
-            // ベットボタンを表示
-            betButtons.SetActive(true);
+            this.timer -= Time.deltaTime;
 
-            this.betOnLeft = this.selectButtons.GetComponent<Select>().IsSelectedLeft();
+            this.Bet();
         
             // カウントダウンを表示する時間になったら
             if(this.timer < this.countDownTime)
@@ -68,44 +59,21 @@ public class Dealer : MonoBehaviour
         }
         else
         {
+            // ベットできないようにする。
             this.selectButtons.SetActive(false);
             this.betButtons.SetActive(false);
-            this.countDownText.text = "";   // 今0が表示されない状態
+            // カウントダウン表示を終了
+            this.countDownText.text = "";
 
-            // 裏返っているカードを表に向ける
+            // 裏返っているカードを表に向ける処理が必要
 
-            // 精算
-            // (負けなら全額没収、勝ちなら倍にして返却)
-            playerChip.PassTheBet(this.betButtons.GetComponent<BetButtons>().GetBet());
-            if(betOnLeft)
-            {
-                if(this.leftGameWinner)
-                {
-                    playerChip.ReceivingBet(this.betButtons.GetComponent<BetButtons>().GetBet() * lMag);
-                }
-            }
-            else
-            {
-                if(!this.leftGameWinner)
-                {
-                    playerChip.ReceivingBet(this.betButtons.GetComponent<BetButtons>().GetBet() * rMag);
-                }
-            }
+            // 結果から精算
+            this.Settle();
 
-            // 良ければ次に進む処理
-            if(this.selectButtons.GetComponent<Select>().IsSelectedLeft())
-            {
-                Debug.Log("左に"+ this.betButtons.GetComponent<BetButtons>().GetBet()+"枚");
-            }
-            else
-            {
-                Debug.Log("右に" + this.betButtons.GetComponent<BetButtons>().GetBet()+"枚");
-            }
-            this.betButtons.GetComponent<BetButtons>().ResetBet();
-            //this.gameObject.SetActive(false);
-
-            // デバッグ用(時間を戻すと再度開始)
+            // デバッグ用(時間を戻す事で再度開始)
             this.timer = this.betTime;
+            // 通常：非アクティブにすることで処理を終了
+            //this.gameObject.SetActive(false);
         }
     }
 
@@ -117,15 +85,55 @@ public class Dealer : MonoBehaviour
     // 左右のゲームを決定する。
     void SelectGames()
     {
-        // 左右のゲームの種類と倍率を表示
+        // 複数あるゲームからランダムorレベル設計で設定
+
+        // 仮置きでゲームの種類のみ表示
         this.lGameNameText.text = lGame.name;
-        this.lMagText.text = '×' + lMag.ToString();
         this.rGameNameText.text = rGame.name;
+    }
+
+    // 左右のゲームの倍率を決定する。
+    void SelectMagnification()
+    {
+        // 本来：倍率と役成立フラグをそれぞれのゲームに渡す(この情報から手札が作成される)
+
+        // 仮置：倍率のみを表示
+        this.lMagText.text = '×' + lMag.ToString();
         this.rMagText.text = '×' + rMag.ToString();
     }
 
-    void SelectMagnification()
+    // 精算処理
+    void Settle()
     {
+        this.playerChip.PassTheBet(this.betButtons.GetComponent<BetButtons>().GetBet());
+        if (betOnLeft)
+        {
+            if (this.leftGameWinner)
+            {
+                playerChip.ReceivingBet(this.betButtons.GetComponent<BetButtons>().GetBet() * lMag);
+            }
+        }
+        else
+        {
+            if (!this.leftGameWinner)
+            {
+                playerChip.ReceivingBet(this.betButtons.GetComponent<BetButtons>().GetBet() * rMag);
+            }
+        }
 
+        // ベット用のボタンが保有するベット値をリセット
+        this.betButtons.GetComponent<BetButtons>().ResetBet();
+    }
+
+    // ベット受付処理
+    void Bet()
+    {
+        // プレイヤーのベットを受け付ける
+        // 右か左を選択
+        this.selectButtons.SetActive(true);
+        // ベットボタンを表示
+        this.betButtons.SetActive(true);
+
+        this.betOnLeft = this.selectButtons.GetComponent<Select>().IsSelectedLeft();
     }
 }

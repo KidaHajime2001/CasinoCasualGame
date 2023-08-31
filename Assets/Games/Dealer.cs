@@ -26,6 +26,7 @@ public class Dealer : MonoBehaviour
     [SerializeField] Chip playerChip;
 
     [SerializeField] TextMeshProUGUI countDownText;
+    [SerializeField] TextMeshProUGUI betText;
 
     // Start is called before the first frame update
     void Start()
@@ -48,6 +49,7 @@ public class Dealer : MonoBehaviour
         // ƒQ[ƒ€‚ğŒÄo‚µA”{—¦‚ÆŸ—˜ó‘Ô‚ğ“n‚·B
 
         this.timer -= Time.deltaTime;
+        this.betText.text = "Bet : "+this.betButtons.GetComponent<BetButtons>().GetBet().ToString();
 
         if (this.timer > 0)
         {

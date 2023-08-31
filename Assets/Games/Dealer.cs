@@ -7,11 +7,11 @@ using UnityEngine.UI;
 
 public class Dealer : MonoBehaviour
 {
-    //[SerializeField] GameObject leftGame;
-    [SerializeField] int leftMag;
+    [SerializeField] GameObject lGame;
+    [SerializeField] int lMag;
 
-    //[SerializeField] GameObject rightGame;
-    [SerializeField] int rightMag;
+    [SerializeField] GameObject rGame;
+    [SerializeField] int rMag;
 
     [SerializeField] bool leftGameWinner;
     [SerializeField] bool betOnLeft;
@@ -34,11 +34,10 @@ public class Dealer : MonoBehaviour
         this.timer = betTime;
 
         // ゲームタイプを決定(ポーカーやブラックジャック等)
+        // 今は仮置きで決まったゲームが設定。
+        this.SelectGames();
 
         // 倍率を決定
-
-        // 左右どちらが勝利になるか決定
-        // (どちらも勝利どちらも敗北の場合が追加されるかも)
     }
 
     // Update is called once per frame
@@ -82,14 +81,14 @@ public class Dealer : MonoBehaviour
             {
                 if(this.leftGameWinner)
                 {
-                    playerChip.ReceivingBet(this.betButtons.GetComponent<BetButtons>().GetBet() * leftMag);
+                    playerChip.ReceivingBet(this.betButtons.GetComponent<BetButtons>().GetBet() * lMag);
                 }
             }
             else
             {
                 if(!this.leftGameWinner)
                 {
-                    playerChip.ReceivingBet(this.betButtons.GetComponent<BetButtons>().GetBet() * rightMag);
+                    playerChip.ReceivingBet(this.betButtons.GetComponent<BetButtons>().GetBet() * rMag);
                 }
             }
 
@@ -108,5 +107,25 @@ public class Dealer : MonoBehaviour
             // デバッグ用(時間を戻すと再度開始)
             this.timer = this.betTime;
         }
+    }
+
+
+    [SerializeField] TextMeshProUGUI lGameNameText;
+    [SerializeField] TextMeshProUGUI rGameNameText;
+    [SerializeField] TextMeshProUGUI lMagText;
+    [SerializeField] TextMeshProUGUI rMagText;
+    // 左右のゲームを決定する。
+    void SelectGames()
+    {
+        // 左右のゲームの種類と倍率を表示
+        this.lGameNameText.text = lGame.name;
+        this.lMagText.text = '×' + lMag.ToString();
+        this.rGameNameText.text = rGame.name;
+        this.rMagText.text = '×' + rMag.ToString();
+    }
+
+    void SelectMagnification()
+    {
+
     }
 }

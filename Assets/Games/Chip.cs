@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Chip : MonoBehaviour
 {
     [SerializeField] int chip;
+    [SerializeField] TextMeshProUGUI chipText;
 
     // Start is called before the first frame update
     void Start()
@@ -15,7 +17,7 @@ public class Chip : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        chipText.text = "Have : " + this.chip.ToString();
     }
 
     public int GetChip()

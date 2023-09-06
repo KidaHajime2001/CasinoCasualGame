@@ -1,56 +1,67 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEditor.SceneManagement;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 public class ChipGenerator : MonoBehaviour
 {
-    [SerializeField]
-    bool useObjectPool = true;  //オブジェクトプールを使用するかどうか
-    [SerializeField]
-    PoolManager poolManager;    //オブジェクトプール用に作成したクラス
-    [SerializeField]
-    GameObject prefab;          //オブジェクトプールに使用するプレハブ
-    [SerializeField]
-    int spawnCount = 50;         //生成する数
-
-    [SerializeField]
-    GameObject objPos;         //生成する数
-    Vector3 pos;
-
-    [SerializeField]
-    float spawnInterval = 0.1f;
-    [SerializeField]
-    Vector3 minSpawnPosition = Vector3.zero;
-    [SerializeField]
-    Vector3 maxSpawnPosition = Vector3.zero;
-    [SerializeField]
-    float destroyWaitTime = 3;
-
-    WaitForSeconds spawnIntervalWait;
-
-    void Start()
+    enum ChipRate //チップのレート
     {
-        pos=objPos.transform.position;
-        spawnIntervalWait = new WaitForSeconds(spawnInterval);
-
-        StartCoroutine(nameof(SpawnTimer));
+        low,
+        medium,
+        high,
+        
     }
 
-    IEnumerator SpawnTimer()
-    {
-        int i;
+    [SerializeField] private List<GameObject> spawnPoint = new List<GameObject>();
 
+
+    [SerializeField] private List<GameObject> chipObj = new List<GameObject>();   //チップのプレハブ
+    private PoolManager[] poolManager;//3個のチップ用オブジェクトプール
+
+    private const int POOL_SIZE = 100; //チップの限度数
+
+    //debug
+    WaitForSeconds waitForSeconds = new WaitForSeconds(0.3f);
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        foreach (var rate in Enum.GetValues(typeof(ChipRate)))
+        {
+            this.gameObject.AddComponent<PoolManager>();
+        }
+        poolManager = GetComponents<PoolManager>();
+
+        //チップのレートの数オブジェクトプールを作成
+        foreach (var rate in Enum.GetValues(typeof(ChipRate)))
+        {
+            poolManager[(int)rate].EntryPrefab(chipObj[(int)rate]);
+            poolManager[(int)rate].CreateObjectPool(POOL_SIZE);
+        }
+        //debug
+        StartCoroutine(DebugCoroutine());
+    }
+
+    IEnumerator DebugCoroutine()
+    {
         while (true)
         {
-            for (i = 0; i < spawnCount; i++)
+            
+            foreach (var rate in Enum.GetValues(typeof(ChipRate)))
             {
-                poolManager.GetGameObject(prefab, pos, Quaternion.identity);
-                
-            }
 
-            yield return spawnIntervalWait;
+                poolManager[(int)rate].GetObj();
+            }
+                yield return waitForSeconds;
         }
     }
 
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
 }

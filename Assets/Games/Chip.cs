@@ -14,7 +14,7 @@ public class Chip : MonoBehaviour
 
     void Start()
     {
-        UpdateTMP();
+        UpdateHaveTMP();
     }
 
     void Update()
@@ -22,7 +22,7 @@ public class Chip : MonoBehaviour
 
     }
 
-    void UpdateTMP()
+    void UpdateHaveTMP()
     {
         if(this.haveTxt != null)
         {
@@ -30,7 +30,7 @@ public class Chip : MonoBehaviour
         }
     }
 
-    public int GetChip()
+    public int Get()
     {
         return this.have;
     }
@@ -38,7 +38,7 @@ public class Chip : MonoBehaviour
     public int PassTheBet(int _value)
     {
         this.have -= _value;
-        UpdateTMP();
+        UpdateHaveTMP();
 
         return _value;
     }
@@ -46,6 +46,6 @@ public class Chip : MonoBehaviour
     public void ReceivingBet(int _value)
     {
         this.have += _value;
-        UpdateTMP();
+        UpdateHaveTMP();
     }
 }

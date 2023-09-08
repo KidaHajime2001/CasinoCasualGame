@@ -20,13 +20,21 @@ public class Dealer : MonoBehaviour
     [SerializeField] float countDownTime;
     [SerializeField] float timer;
 
-    [SerializeField] GameObject betButtons;
-    [SerializeField] GameObject selectButtons;
 
     [SerializeField] Chip playerChip;
+    [SerializeField] GameObject betButtons;
 
-    [SerializeField] TextMeshProUGUI countDownText;
+    [Header("UI")]
     [SerializeField] TextMeshProUGUI betText;
+    [SerializeField] TextMeshProUGUI countDownText;
+    [SerializeField] TextMeshProUGUI lGameNameText;
+    [SerializeField] TextMeshProUGUI rGameNameText;
+    [SerializeField] TextMeshProUGUI lMagText;
+    [SerializeField] TextMeshProUGUI rMagText;
+
+
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -42,7 +50,7 @@ public class Dealer : MonoBehaviour
     void Update()
     {
         // ベットされている量を表示
-        this.betText.text = this.betButtons.GetComponent<BetButtons>().GetBet().ToString();
+        this.betText.text = this.betButtons.GetComponent<BetSystem>().GetBet().ToString();
 
         // 時間制限内なら
         if (this.timer > 0)
@@ -60,7 +68,6 @@ public class Dealer : MonoBehaviour
         else
         {
             // ベットできないようにする。
-            this.selectButtons.SetActive(false);
             this.betButtons.SetActive(false);
             // カウントダウン表示を終了
             this.countDownText.text = "";
@@ -77,11 +84,6 @@ public class Dealer : MonoBehaviour
         }
     }
 
-
-    [SerializeField] TextMeshProUGUI lGameNameText;
-    [SerializeField] TextMeshProUGUI rGameNameText;
-    [SerializeField] TextMeshProUGUI lMagText;
-    [SerializeField] TextMeshProUGUI rMagText;
     // 左右のゲームを決定する。
     void SelectGames()
     {
@@ -105,35 +107,33 @@ public class Dealer : MonoBehaviour
     // 精算処理
     void Settle()
     {
-        this.playerChip.PassTheBet(this.betButtons.GetComponent<BetButtons>().GetBet());
+        this.playerChip.PassTheBet(this.betButtons.GetComponent<BetSystem>().GetBet());
         if (betOnLeft)
         {
             if (this.leftGameWinner)
             {
-                playerChip.ReceivingBet(this.betButtons.GetComponent<BetButtons>().GetBet() * lMag);
+                playerChip.ReceivingBet(this.betButtons.GetComponent<BetSystem>().GetBet() * lMag);
             }
         }
         else
         {
             if (!this.leftGameWinner)
             {
-                playerChip.ReceivingBet(this.betButtons.GetComponent<BetButtons>().GetBet() * rMag);
+                playerChip.ReceivingBet(this.betButtons.GetComponent<BetSystem>().GetBet() * rMag);
             }
         }
 
         // ベット用のボタンが保有するベット値をリセット
-        this.betButtons.GetComponent<BetButtons>().ResetBet();
+        this.betButtons.GetComponent<BetSystem>().ResetBet();
     }
 
     // ベット受付処理
     void Bet()
     {
         // プレイヤーのベットを受け付ける
-        // 右か左を選択
-        this.selectButtons.SetActive(true);
         // ベットボタンを表示
         this.betButtons.SetActive(true);
 
-        this.betOnLeft = this.selectButtons.GetComponent<Select>().IsSelectedLeft();
+        this.betOnLeft = this.betButtons.GetComponent<BetSystem>().IsSelectedLeft();
     }
 }

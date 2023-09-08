@@ -5,37 +5,47 @@ using UnityEngine;
 
 public class Chip : MonoBehaviour
 {
-    [SerializeField] int chip;
-    [SerializeField] TextMeshProUGUI chipText;
+    [Tooltip("所有しているチップの量")]
+    [SerializeField] int have;
 
-    // Start is called before the first frame update
+    [Header("UI")]
+    [Tooltip("所有しているチップの量を表示したい場合、TMPにアタッチ")]
+    [SerializeField] TextMeshProUGUI haveTxt;
+
     void Start()
+    {
+        UpdateTMP();
+    }
+
+    void Update()
     {
 
     }
 
-    // Update is called once per frame
-    void Update()
+    void UpdateTMP()
     {
-        if (this.chipText != null)
+        if(this.haveTxt != null)
         {
-            chipText.text = "Have : " + this.chip.ToString();
+            haveTxt.text = this.have.ToString();
         }
     }
 
     public int GetChip()
     {
-        return this.chip;
+        return this.have;
     }
 
     public int PassTheBet(int _value)
     {
-        this.chip -= _value;
+        this.have -= _value;
+        UpdateTMP();
+
         return _value;
     }
 
     public void ReceivingBet(int _value)
     {
-        this.chip += _value;
+        this.have += _value;
+        UpdateTMP();
     }
 }

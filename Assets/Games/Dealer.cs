@@ -42,7 +42,7 @@ public class Dealer : MonoBehaviour
     void Update()
     {
         // ベットされている量を表示
-        this.betText.text = "Bet : "+this.betButtons.GetComponent<BetButtons>().GetBet().ToString();
+        this.betText.text = this.betButtons.GetComponent<BetButtons>().GetBet().ToString();
 
         // 時間制限内なら
         if (this.timer > 0)

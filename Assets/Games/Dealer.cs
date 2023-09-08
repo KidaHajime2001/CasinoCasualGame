@@ -22,19 +22,15 @@ public class Dealer : MonoBehaviour
 
 
     [SerializeField] Chip playerChip;
-    [SerializeField] GameObject betButtons;
+    [SerializeField] GameObject betSystem;
 
     [Header("UI")]
-    [SerializeField] TextMeshProUGUI betText;
-    [SerializeField] TextMeshProUGUI countDownText;
-    [SerializeField] TextMeshProUGUI lGameNameText;
-    [SerializeField] TextMeshProUGUI rGameNameText;
-    [SerializeField] TextMeshProUGUI lMagText;
-    [SerializeField] TextMeshProUGUI rMagText;
-
-
-
-
+    [SerializeField] TextMeshProUGUI betTxt;
+    [SerializeField] TextMeshProUGUI countDownTxt;
+    [SerializeField] TextMeshProUGUI lGameNameTxt;
+    [SerializeField] TextMeshProUGUI rGameNameTxt;
+    [SerializeField] TextMeshProUGUI lMagTxt;
+    [SerializeField] TextMeshProUGUI rMagTxt;
 
     // Start is called before the first frame update
     void Start()
@@ -50,7 +46,7 @@ public class Dealer : MonoBehaviour
     void Update()
     {
         // ベットされている量を表示
-        this.betText.text = this.betButtons.GetComponent<BetSystem>().GetBet().ToString();
+        this.betTxt.text = this.betSystem.GetComponent<BetSystem>().GetBet().ToString();
 
         // 時間制限内なら
         if (this.timer > 0)
@@ -62,15 +58,15 @@ public class Dealer : MonoBehaviour
             // カウントダウンを表示する時間になったら
             if(this.timer < this.countDownTime)
             {
-                this.countDownText.text = Mathf.Ceil(this.timer).ToString();
+                this.countDownTxt.text = Mathf.Ceil(this.timer).ToString();
             }
         }
         else
         {
             // ベットできないようにする。
-            this.betButtons.SetActive(false);
+            this.betSystem.SetActive(false);
             // カウントダウン表示を終了
-            this.countDownText.text = "";
+            this.countDownTxt.text = "";
 
             // 裏返っているカードを表に向ける処理が必要
 
@@ -90,8 +86,8 @@ public class Dealer : MonoBehaviour
         // 複数あるゲームからランダムorレベル設計で設定
 
         // 仮置きでゲームの種類のみ表示
-        this.lGameNameText.text = lGame.name;
-        this.rGameNameText.text = rGame.name;
+        this.lGameNameTxt.text = lGame.name;
+        this.rGameNameTxt.text = rGame.name;
     }
 
     // 左右のゲームの倍率を決定する。
@@ -100,31 +96,31 @@ public class Dealer : MonoBehaviour
         // 本来：倍率と役成立フラグをそれぞれのゲームに渡す(この情報から手札が作成される)
 
         // 仮置：倍率のみを表示
-        this.lMagText.text = '×' + lMag.ToString();
-        this.rMagText.text = '×' + rMag.ToString();
+        this.lMagTxt.text = '×' + lMag.ToString();
+        this.rMagTxt.text = '×' + rMag.ToString();
     }
 
     // 精算処理
     void Settle()
     {
-        this.playerChip.PassTheBet(this.betButtons.GetComponent<BetSystem>().GetBet());
+        this.playerChip.PassTheBet(this.betSystem.GetComponent<BetSystem>().GetBet());
         if (betOnLeft)
         {
             if (this.leftGameWinner)
             {
-                playerChip.ReceivingBet(this.betButtons.GetComponent<BetSystem>().GetBet() * lMag);
+                playerChip.ReceivingBet(this.betSystem.GetComponent<BetSystem>().GetBet() * lMag);
             }
         }
         else
         {
             if (!this.leftGameWinner)
             {
-                playerChip.ReceivingBet(this.betButtons.GetComponent<BetSystem>().GetBet() * rMag);
+                playerChip.ReceivingBet(this.betSystem.GetComponent<BetSystem>().GetBet() * rMag);
             }
         }
 
         // ベット用のボタンが保有するベット値をリセット
-        this.betButtons.GetComponent<BetSystem>().ResetBet();
+        this.betSystem.GetComponent<BetSystem>().BetReset();
     }
 
     // ベット受付処理
@@ -132,8 +128,8 @@ public class Dealer : MonoBehaviour
     {
         // プレイヤーのベットを受け付ける
         // ベットボタンを表示
-        this.betButtons.SetActive(true);
+        this.betSystem.SetActive(true);
 
-        this.betOnLeft = this.betButtons.GetComponent<BetSystem>().IsSelectedLeft();
+        this.betOnLeft = this.betSystem.GetComponent<BetSystem>().IsSelectedLeft();
     }
 }

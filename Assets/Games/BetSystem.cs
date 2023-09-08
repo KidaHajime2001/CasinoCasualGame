@@ -11,6 +11,7 @@ public class BetSystem : MonoBehaviour
     [SerializeField] List<Button> betButtons;
     [SerializeField] Chip playerChip;
     [SerializeField] int bet = 0;
+    
     [Tooltip("¶‰E‚Ç‚¿‚ç‚ÌƒQ[ƒ€‚ÉBet‚·‚é‚Ì‚©?")]
     [SerializeField] bool isSelectedLeft = true;
 
@@ -50,7 +51,7 @@ public class BetSystem : MonoBehaviour
         return this.bet;
     }
 
-    public void ResetBet()
+    public void BetReset()
     {
         this.bet = 0;
     }

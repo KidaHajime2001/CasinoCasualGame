@@ -17,7 +17,10 @@ public class Chip : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        chipText.text = "Have : " + this.chip.ToString();
+        if (this.chipText != null)
+        {
+            chipText.text = "Have : " + this.chip.ToString();
+        }
     }
 
     public int GetChip()

@@ -1,10 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.SceneManagement;
 using UnityEngine;
-
 public class ChipGenerator : MonoBehaviour
 {
     enum ChipRate //チップのレート
@@ -14,8 +11,10 @@ public class ChipGenerator : MonoBehaviour
         high,
         
     }
-
+    [SerializeField] private bool onSwitch;
     [SerializeField] private List<GameObject> spawnPoint = new List<GameObject>();
+
+    private PlayerData playerData;
 
 
     [SerializeField] private List<GameObject> chipObj = new List<GameObject>();   //チップのプレハブ
@@ -25,10 +24,37 @@ public class ChipGenerator : MonoBehaviour
 
     //debug
     WaitForSeconds waitForSeconds = new WaitForSeconds(0.3f);
+    private int chipNum;
+    private int beforeChipNum;
+    private int lowNum = 0;
+    private int midiumNum = 0;
+    private int highNum = 0;
 
+    private const int CHIP_HIGH_RATE= 100;
+    private const int CHIP_MIDIUM_RATE= 10;
+    private const int CHIP_LOW_RATE= 1;
+
+    Dictionary<ChipRate, int> RateDic;
+    Dictionary<ChipRate, int> RateDicNow;
     // Start is called before the first frame update
     void Start()
     {
+        
+        RateDic = new Dictionary<ChipRate, int>();
+        RateDicNow = new Dictionary<ChipRate, int>();
+        playerData = JsonDataManager.LoadData(JsonDataManager.GetPath());
+        ChipNumberCalculation((int)playerData._chipNum) ;
+
+        RateDicNow[ChipRate.high] = highNum;
+        RateDicNow[ChipRate.medium] = midiumNum;
+        RateDicNow[ChipRate.low] = lowNum;
+        RateDic[ChipRate.high]      =RateDicNow[ChipRate.high];
+        RateDic[ChipRate.medium]    =RateDicNow[ChipRate.medium];
+        RateDic[ChipRate.low]       =RateDicNow[ChipRate.low];
+
+
+
+
         foreach (var rate in Enum.GetValues(typeof(ChipRate)))
         {
             this.gameObject.AddComponent<PoolManager>();
@@ -41,8 +67,20 @@ public class ChipGenerator : MonoBehaviour
             poolManager[(int)rate].EntryPrefab(chipObj[(int)rate]);
             poolManager[(int)rate].CreateObjectPool(POOL_SIZE);
         }
-        //debug
-        StartCoroutine(DebugCoroutine());
+        if(onSwitch)
+        {
+            foreach (ChipRate rate in Enum.GetValues(typeof(ChipRate)))
+            {
+                for (int i = 0; i < RateDic[rate]; i++)
+                {
+                    poolManager[(int)rate].SpawnGameObject(spawnPoint[(int)rate].transform.position, spawnPoint[(int)rate].transform.rotation);
+                }
+                
+            }
+            ////debug
+            //StartCoroutine(DebugCoroutine());
+        }
+        
     }
 
     IEnumerator DebugCoroutine()
@@ -62,6 +100,85 @@ public class ChipGenerator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        // 1キー押下で現在位置をセーブする
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            int i = UnityEngine.Random.Range(0, 10);
+            Debug.Log(i);
+            chipNum += i;
+        }
+
+        // 2キー押下で現在位置をロードする
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            int i = UnityEngine.Random.Range(0, 10);
+            Debug.Log(i);
+            chipNum-= i;
+            
+        }
+
+
+
+
+        ChipNumberCalculation(chipNum);
+
+        foreach (ChipRate rate in Enum.GetValues(typeof(ChipRate)))
+        {
+            int sub = RateDicNow[rate]-RateDic[rate];
+            if (sub>=0)
+            {
+                for (int i = 0; i < sub; i++)
+                {
+
+                    Debug.Log(RateDicNow[rate]);
+                    Debug.Log(RateDic[rate]);
+                    Debug.Log("sub:"+sub);
+                    poolManager[(int)rate].SpawnGameObject(spawnPoint[(int)rate].transform.position, spawnPoint[(int)rate].transform.rotation);
+                }
+            }
+            else
+            {
+                Debug.Log("sub:" + sub);
+                sub *= -1;
+                for (int i = 0; i < sub; i++)
+                {
+                    Debug.Log("消します");
+                    poolManager[(int)rate].ReleaseObj();
+                }
+            }
+            
+
+        }
+        playerData._chipNum = (uint)chipNum;
+        JsonDataManager.SaveData(playerData);
+        beforeChipNum = chipNum;
+        SetRateDisc();
     }
+
+    private void ChipNumberCalculation(int _chipMaxNumber)
+    {
+
+        int surplus = 0;
+        chipNum = _chipMaxNumber;
+        highNum = chipNum / CHIP_HIGH_RATE;
+        surplus = chipNum % CHIP_HIGH_RATE;
+        midiumNum = surplus / CHIP_MIDIUM_RATE;
+        surplus = surplus % CHIP_MIDIUM_RATE;
+        lowNum = surplus / CHIP_LOW_RATE;
+
+        SetRateDiscNow(highNum, midiumNum, lowNum);
+    }
+    private void SetRateDisc()
+    {
+        RateDic[ChipRate.high] = RateDicNow[ChipRate.high];
+        RateDic[ChipRate.medium] = RateDicNow[ChipRate.medium];
+        RateDic[ChipRate.low] = RateDicNow[ChipRate.low];
+    }
+    private void SetRateDiscNow(int h,int m,int l)
+    {
+        RateDicNow[ChipRate.high] = h;
+        RateDicNow[ChipRate.medium] = m;
+        RateDicNow[ChipRate.low] = l;
+    }
+
 }

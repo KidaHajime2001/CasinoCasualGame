@@ -10,7 +10,7 @@ public class PoolManager : MonoBehaviour
     IObjectPool<GameObject> pool;　//オブジェクトプール
 
     private GameObject prefab;//外部からゲッターのみ参照可能,オブジェクトプール用のプレハブを受け取る
-
+    private List<GameObject> nowActiveList;
 
     public void EntryPrefab(GameObject _poolBase)
     {
@@ -28,6 +28,7 @@ public class PoolManager : MonoBehaviour
         //第３引数がプールにオブジェクトを返す関数を受け取る
         //第４引数がオブジェクトを消去する関数を受け取る
         pool = new ObjectPool<GameObject>(OnCreatePooledObject, OnGetFromPool, OnReleaseToPool, OnDestroyPooledObject,true,10,50);
+        nowActiveList = new List<GameObject>();
     }
 
 
@@ -65,6 +66,18 @@ public class PoolManager : MonoBehaviour
         var obj = pool.Get();
         obj.AddComponent<DeleteInvoke>();
         obj.GetComponent<DeleteInvoke>().InitStatus(pool);
+        nowActiveList.Add(obj);
         return obj;
+    }
+    public void ReleaseObj()
+    {
+        nowActiveList[nowActiveList.Count - 1].GetComponent<DeleteInvoke>().Release();
+        nowActiveList.Remove(nowActiveList[nowActiveList.Count - 1]);
+    }
+    public void SpawnGameObject(Vector3 pos,Quaternion rot)
+    {
+       var obj = GetObj();
+        obj.transform.position = pos;
+        obj.transform.rotation = rot;
     }
 }

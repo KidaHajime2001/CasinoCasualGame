@@ -13,24 +13,25 @@ public class DeleteInvoke : MonoBehaviour
     {
         
     }
-    void Release()
+    public void Release()
     {
         pool.Release(this.gameObject);
     }
     public void InitStatus(IObjectPool<GameObject> _pool)
     {
-      pool = _pool;
+        pool = _pool;
         countTime = 0.0f;
     }
     private void Update()
-    {
-        if (pool == null) return;
+    { 
+    //{
+    //    if (pool == null) return;
 
-        countTime += Time.deltaTime;
-        if(limitTime<=countTime)
-        {
-            Release();
-        }
+    //    countTime += Time.deltaTime;
+    //    if(limitTime<=countTime)
+    //    {
+    //        Release();
+    //    }
     }
 
 }

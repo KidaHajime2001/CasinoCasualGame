@@ -44,13 +44,7 @@ public class ChipGenerator : MonoBehaviour
         RateDicNow = new Dictionary<ChipRate, int>();
         playerData = JsonDataManager.LoadData(JsonDataManager.GetPath());
         ChipNumberCalculation((int)playerData._chipNum) ;
-
-        RateDicNow[ChipRate.high] = highNum;
-        RateDicNow[ChipRate.medium] = midiumNum;
-        RateDicNow[ChipRate.low] = lowNum;
-        RateDic[ChipRate.high]      =RateDicNow[ChipRate.high];
-        RateDic[ChipRate.medium]    =RateDicNow[ChipRate.medium];
-        RateDic[ChipRate.low]       =RateDicNow[ChipRate.low];
+        SetRateDisc(); 
 
 
 

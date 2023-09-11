@@ -50,6 +50,7 @@ public class CameraControl : MonoBehaviour
     {
         if (Input.GetKeyDown("a"))
         {
+            Debug.Log("sssss");
             ChangeTargetPosition();
         }
 

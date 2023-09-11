@@ -65,24 +65,46 @@ public class Playingcards : MonoBehaviour
         for(int i=0; i<13; i++)
         {
             spadeList[i].transform.localScale = new Vector3(ADJUSTMENT_CARD_SCALE, ADJUSTMENT_CARD_SCALE, ADJUSTMENT_CARD_SCALE);
+            
+            var rig =spadeList[i].GetComponent<Rigidbody>();
+            if(rig)
+            {
+                rig.useGravity = false;
+            }
+
             playCardDataS[i].Init(Suit.spade,i,spadeList[i]);
         };
 
         for (int i = 0; i < 13; i++)
         {
             heartList[i].transform.localScale = new Vector3(ADJUSTMENT_CARD_SCALE, ADJUSTMENT_CARD_SCALE, ADJUSTMENT_CARD_SCALE);
+            var rig = heartList[i].GetComponent<Rigidbody>();
+            if (rig)
+            {
+                rig.useGravity = false;
+            }
             playCardDataH[i].Init(Suit.herat, i, heartList[i]);
         };
 
         for (int i = 0; i < 13; i++)
         {
             diamondList[i].transform.localScale = new Vector3(ADJUSTMENT_CARD_SCALE, ADJUSTMENT_CARD_SCALE, ADJUSTMENT_CARD_SCALE);
+            var rig = diamondList[i].GetComponent<Rigidbody>();
+            if (rig)
+            {
+                rig.useGravity = false;
+            }
             playCardDataD[i].Init(Suit.diamond, i, diamondList[i]);
         };
 
         for (int i = 0; i < 13; i++)
         {
             clubList[i].transform.localScale = new Vector3(ADJUSTMENT_CARD_SCALE, ADJUSTMENT_CARD_SCALE, ADJUSTMENT_CARD_SCALE);
+            var rig = clubList[i].GetComponent<Rigidbody>();
+            if (rig)
+            {
+                rig.useGravity = false;
+            }
             playCardDataC[i].Init(Suit.club, i, clubList[i]);
         };
 

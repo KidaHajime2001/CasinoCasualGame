@@ -5746,6 +5746,7 @@ GameObject:
   m_Component:
   - component: {fileID: 488129562}
   - component: {fileID: 488129563}
+  - component: {fileID: 488129564}
   m_Layer: 0
   m_Name: GameSceneControl
   m_TagString: Untagged
@@ -5780,9 +5781,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49b222537b7103b45b4ece1d6ce9bccb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCamera: {fileID: 2036857359}
+  mainCamera: {fileID: 2144361113}
   neutralCamera: {fileID: 2036857359}
   questionCamera: {fileID: 2144361113}
+--- !u!114 &488129564
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 488129561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c7c558e57f490b4e9ce09aed2be2890, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameData:
+    gameType: 0
+    cardData:
+    - suit: 0
+      Number: 0
+    PulusChip: 0
+    Magnitude: 0
 --- !u!1 &590580646
 GameObject:
   m_ObjectHideFlags: 0
@@ -17795,8 +17815,8 @@ Camera:
   m_GameObject: {fileID: 2144361113}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0.9254902, g: 0.59607846, b: 0.627451, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0

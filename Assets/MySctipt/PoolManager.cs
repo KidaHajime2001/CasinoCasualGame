@@ -71,8 +71,15 @@ public class PoolManager : MonoBehaviour
     }
     public void ReleaseObj()
     {
-        nowActiveList[nowActiveList.Count - 1].GetComponent<DeleteInvoke>().Release();
-        nowActiveList.Remove(nowActiveList[nowActiveList.Count - 1]);
+        if(nowActiveList.Count>0)
+        {
+            nowActiveList[nowActiveList.Count - 1].GetComponent<DeleteInvoke>().Release();
+            nowActiveList.Remove(nowActiveList[nowActiveList.Count - 1]);
+
+
+
+        }
+        
     }
     public void SpawnGameObject(Vector3 pos,Quaternion rot)
     {

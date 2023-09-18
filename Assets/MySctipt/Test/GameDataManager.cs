@@ -85,7 +85,7 @@ public class GameDataManager : MonoBehaviour
         Debug.Log(Application.persistentDataPath);
         _data = LoadData(_dataPath);
         SaveData(waves);
-        Debug.Log(waves[0]);
+        //Debug.Log(waves[0]);
     }
 
 

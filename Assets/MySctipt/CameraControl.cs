@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class CameraControl : MonoBehaviour
 {
+    //[SerializeField]
+    //private GameObject parent;
+
     [SerializeField]
     private GameObject mainCamera; //ÉJÉÅÉâ
 
@@ -31,9 +34,9 @@ public class CameraControl : MonoBehaviour
     {
 
         //ÉJÉÅÉâÇê›íË
-        neutralCameraPos = neutralCamera.transform.position;
+        neutralCameraPos = neutralCamera.transform.localPosition;
         neutralCameraAngle = neutralCamera.transform.rotation;
-        questionCameraPos = questionCamera.transform.position;
+        questionCameraPos = questionCamera.transform.localPosition;
         questionCameraAngle = questionCamera.transform.rotation;
 
         currentPosition = neutralCameraPos;
@@ -64,7 +67,7 @@ public class CameraControl : MonoBehaviour
         {
             currentPosition = Vector3.Lerp(currentPosition, targetPosition, Time.deltaTime * smoothSpeed);
             currentAngle =Quaternion.Lerp(currentAngle,targetAngle, Time.deltaTime * smoothSpeed);
-            mainCamera.transform.position = currentPosition;
+            mainCamera.transform.localPosition = currentPosition;
             mainCamera.transform.rotation = currentAngle;
 
         }

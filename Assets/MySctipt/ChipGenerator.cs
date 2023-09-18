@@ -24,7 +24,7 @@ public class ChipGenerator : MonoBehaviour
 
     //debug
     WaitForSeconds waitForSeconds = new WaitForSeconds(0.3f);
-    private int chipNum;
+    private int chipNum = 100;
     private int beforeChipNum;
     private int lowNum = 0;
     private int midiumNum = 0;
@@ -34,16 +34,23 @@ public class ChipGenerator : MonoBehaviour
     private const int CHIP_MIDIUM_RATE= 10;
     private const int CHIP_LOW_RATE= 1;
 
+    [SerializeField]
+    private GameObject scoreTextObj;
+    private ScoreText scoreText;
+
+
     Dictionary<ChipRate, int> RateDic;
     Dictionary<ChipRate, int> RateDicNow;
     // Start is called before the first frame update
     void Start()
     {
-        
+        scoreText = scoreTextObj.GetComponent<ScoreText>();
+
         RateDic = new Dictionary<ChipRate, int>();
         RateDicNow = new Dictionary<ChipRate, int>();
         playerData = JsonDataManager.LoadData(JsonDataManager.GetPath());
-        ChipNumberCalculation((int)playerData._chipNum) ;
+        //ChipNumberCalculation((int)playerData._chipNum) ;
+        ChipNumberCalculation(100) ;
         SetRateDisc(); 
 
 
@@ -94,12 +101,13 @@ public class ChipGenerator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         // 1キー押下で現在位置をセーブする
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             int i = UnityEngine.Random.Range(0, 10);
             Debug.Log(i);
-            chipNum += i;
+            AddChipLow();
         }
 
         // 2キー押下で現在位置をロードする
@@ -111,7 +119,7 @@ public class ChipGenerator : MonoBehaviour
             
         }
 
-
+        
 
 
         ChipNumberCalculation(chipNum);
@@ -132,35 +140,34 @@ public class ChipGenerator : MonoBehaviour
             }
             else
             {
-                Debug.Log("sub:" + sub);
                 sub *= -1;
                 for (int i = 0; i < sub; i++)
                 {
-                    Debug.Log("消します");
                     poolManager[(int)rate].ReleaseObj();
                 }
             }
             
 
         }
-        playerData._chipNum = (uint)chipNum;
-        JsonDataManager.SaveData(playerData);
+        scoreText.GetChipData((int)chipNum);
+        
+        //playerData._chipNum = (uint)chipNum;
+        //JsonDataManager.SaveData(playerData);
         beforeChipNum = chipNum;
         SetRateDisc();
     }
 
     private void ChipNumberCalculation(int _chipMaxNumber)
     {
-
+        //Debug.Log(_chipMaxNumber);
         int surplus = 0;
-        chipNum = _chipMaxNumber;
-        highNum = chipNum / CHIP_HIGH_RATE;
-        surplus = chipNum % CHIP_HIGH_RATE;
+        highNum = _chipMaxNumber / CHIP_HIGH_RATE;
+        surplus = _chipMaxNumber % CHIP_HIGH_RATE;
         midiumNum = surplus / CHIP_MIDIUM_RATE;
         surplus = surplus % CHIP_MIDIUM_RATE;
         lowNum = surplus / CHIP_LOW_RATE;
 
-        SetRateDiscNow(highNum, midiumNum, lowNum);
+        SetRateDiscNow(highNum*10, midiumNum*10, lowNum*3);
     }
     private void SetRateDisc()
     {
@@ -175,4 +182,17 @@ public class ChipGenerator : MonoBehaviour
         RateDicNow[ChipRate.low] = l;
     }
 
+    public void AddChipLow()
+    {
+        chipNum += CHIP_LOW_RATE;
+        Debug.Log(chipNum);
+    }
+    public void AddChipMid()
+    {
+        chipNum += CHIP_MIDIUM_RATE;
+    }
+    public void AddChipHigh()
+    {
+        chipNum += CHIP_HIGH_RATE;
+    }
 }

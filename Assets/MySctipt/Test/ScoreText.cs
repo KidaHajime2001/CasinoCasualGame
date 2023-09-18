@@ -8,6 +8,7 @@ public class ScoreText : MonoBehaviour
 {
     [SerializeField] private GameObject text;
     private PlayerData playerData;
+    private int chipData; 
     // 初期化
     private void Start()
     {
@@ -21,10 +22,14 @@ public class ScoreText : MonoBehaviour
         TextMeshProUGUI _text = text.GetComponent<TextMeshProUGUI>();
         if (_text)
         {
-            playerData = JsonDataManager.LoadData(JsonDataManager.GetPath());
+        //    playerData = JsonDataManager.LoadData(JsonDataManager.GetPath());
             // テキストの表示を入れ替える
-            _text.text = playerData._chipNum.ToString();
+            _text.text = chipData.ToString();
         }
             
+    }
+    public void GetChipData(int _chipData)
+    {
+        chipData = _chipData;
     }
 }

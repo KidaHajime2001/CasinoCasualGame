@@ -6,9 +6,9 @@ using UnityEngine.Pool;
 public class DeleteInvoke : MonoBehaviour
 {
     IObjectPool<GameObject> pool;
-    float limitTime = 3.0f;
-    float countTime = 0.0f;
-        // Start is called before the first frame update
+    //float limitTime = 3.0f;
+    //float countTime = 0.0f;
+    // Start is called before the first frame update
     void Start()
     {
         
@@ -20,7 +20,7 @@ public class DeleteInvoke : MonoBehaviour
     public void InitStatus(IObjectPool<GameObject> _pool)
     {
         pool = _pool;
-        countTime = 0.0f;
+        //countTime = 0.0f;
     }
     private void Update()
     { 

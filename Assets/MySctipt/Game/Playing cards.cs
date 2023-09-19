@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,16 +13,10 @@ public class Playingcards : MonoBehaviour
     [SerializeField] List<GameObject> clubList       = new List<GameObject>();
 
     //トランプのマーク
-    enum Suit
-    { 
-        spade,
-        herat,
-        diamond,
-        club,
-    }
+
 
     //トランプのデータ
-    struct PlayCardData
+    public struct PlayCardData
     {
         Suit _suit;//マーク
         int _number;//数字
@@ -56,13 +51,18 @@ public class Playingcards : MonoBehaviour
     private const int ADJUSTMENT_CARD_SCALE = 20;
     private  Quaternion ADJUSTMENT_CARD_QUATERNION =  Quaternion.Euler(0.0f, 180.0f, 0.0f);
 
+    Dictionary<Suit, PlayCardData[]> dataDic;
     // Start is called before the first frame update
     void Start()
-    { 
+    {
+        dataDic=new Dictionary<Suit, PlayCardData[]>();
+        dataDic[Suit.Spade]=playCardDataS;
+        dataDic[Suit.Heart] = playCardDataH;
+        dataDic[Suit.Diamond] = playCardDataD;
+        dataDic[Suit.Club] = playCardDataC;
 
 
-
-        for(int i=0; i<13; i++)
+        for (int i=0; i<13; i++)
         {
             spadeList[i].transform.localScale = new Vector3(ADJUSTMENT_CARD_SCALE, ADJUSTMENT_CARD_SCALE, ADJUSTMENT_CARD_SCALE);
             
@@ -72,7 +72,7 @@ public class Playingcards : MonoBehaviour
                 rig.useGravity = false;
             }
 
-            playCardDataS[i].Init(Suit.spade,i,spadeList[i]);
+            playCardDataS[i].Init(Suit.Spade,i,spadeList[i]);
         };
 
         for (int i = 0; i < 13; i++)
@@ -83,7 +83,7 @@ public class Playingcards : MonoBehaviour
             {
                 rig.useGravity = false;
             }
-            playCardDataH[i].Init(Suit.herat, i, heartList[i]);
+            playCardDataH[i].Init(Suit.Heart, i, heartList[i]);
         };
 
         for (int i = 0; i < 13; i++)
@@ -94,7 +94,7 @@ public class Playingcards : MonoBehaviour
             {
                 rig.useGravity = false;
             }
-            playCardDataD[i].Init(Suit.diamond, i, diamondList[i]);
+            playCardDataD[i].Init(Suit.Diamond, i, diamondList[i]);
         };
 
         for (int i = 0; i < 13; i++)
@@ -105,31 +105,22 @@ public class Playingcards : MonoBehaviour
             {
                 rig.useGravity = false;
             }
-            playCardDataC[i].Init(Suit.club, i, clubList[i]);
+            playCardDataC[i].Init(Suit.Club, i, clubList[i]);
         };
 
       //ポーカー（5枚）分を生成
-        SummonPoker(playCardDataS[1], playCardDataS[5], playCardDataS[1], playCardDataS[1], playCardDataS[1],new Vector3(0,10,0));
+    
     }
 
     // Update is called once per frame
     void Update()
     {
     }
-
-     void SummonPoker(PlayCardData card1, PlayCardData card2, PlayCardData card3, PlayCardData card4, PlayCardData card5,Vector3 position)
+    public void AdventCard(Vector3 _position,Quaternion _rotate,Suit _suit,int _number)
     {
-        Instantiate(card3.GetGameObject(), position, ADJUSTMENT_CARD_QUATERNION);
-        Instantiate(card1.GetGameObject(), new Vector3(position.x + (ADJUSTMENT_CARDPOS_X * 2), position.y, position.z + (ADJUSTMENT_CARDPOS_Z * 2)), ADJUSTMENT_CARD_QUATERNION);
-        Instantiate(card2.GetGameObject(), new Vector3(position.x + (ADJUSTMENT_CARDPOS_X * 1), position.y, position.z + (ADJUSTMENT_CARDPOS_Z * 1)), ADJUSTMENT_CARD_QUATERNION);
-        Instantiate(card4.GetGameObject(), new Vector3(position.x + (ADJUSTMENT_CARDPOS_X * -1), position.y, position.z + (ADJUSTMENT_CARDPOS_Z * -1)), ADJUSTMENT_CARD_QUATERNION);
-        Instantiate(card5.GetGameObject(), new Vector3(position.x + (ADJUSTMENT_CARDPOS_X * -2), position.y, position.z + (ADJUSTMENT_CARDPOS_Z * -2)), ADJUSTMENT_CARD_QUATERNION);
+       
+        Instantiate(dataDic[_suit][_number].GetGameObject(), _position,_rotate);
 
-        Debug.Log("生成");
-
-        //card1.GetGameObject().transform.position = new Vector3(position.x + (ADJUSTMENT_CARDPOS_X*2) ,position.y,position.z+(ADJUSTMENT_CARDPOS_Z*2));
-        //card2.GetGameObject().transform.position = new Vector3(position.x + (ADJUSTMENT_CARDPOS_X * 1), position.y, position.z + (ADJUSTMENT_CARDPOS_Z * 1));
-        //card4.GetGameObject().transform.position = new Vector3(position.x + (ADJUSTMENT_CARDPOS_X * -1), position.y, position.z + (ADJUSTMENT_CARDPOS_Z * -1));
-        //card5.GetGameObject().transform.position = new Vector3(position.x + (ADJUSTMENT_CARDPOS_X * -2), position.y, position.z + (ADJUSTMENT_CARDPOS_Z * -2));
+            dataDic[_suit][_number].GetGameObject().GetComponent<BoxCollider>().enabled = false;
     }
 }

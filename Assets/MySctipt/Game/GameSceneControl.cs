@@ -19,7 +19,6 @@ public class GameSceneControl : MonoBehaviour
     private CheckPoint[] checkPoints;
     private int nowWave;
     [SerializeField] private GameObject player;
-    private float waveLerpValue=0.0f;
     private Vector3 nowAimPosition;
     [SerializeField]
     private float walkSpeed;

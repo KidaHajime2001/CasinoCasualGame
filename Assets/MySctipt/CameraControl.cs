@@ -1,29 +1,50 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Windows.WebCam;
 
 public class CameraControl : MonoBehaviour
 {
     //[SerializeField]
     //private GameObject parent;
 
+    public struct CameraParameter
+    {
+        public Vector3 position;
+        public Quaternion angle;
+        public void Init(Vector3 _pos,Quaternion _angle)
+        {
+            position = _pos;
+            angle = _angle;
+        }
+    
+    }
+
+    public enum CameraPosition
+    {
+        FrontR,
+        FrontL,
+        Middle,
+        Back,
+    }
+
+    CameraPosition cameraPosition = CameraPosition.Back;
+
     [SerializeField]
     private GameObject mainCamera; //カメラ
 
+    [SerializeField]
+    private GameObject middleCameraPosition; //第一のカメラ
+    CameraParameter middleCameraPParameter;
 
     [SerializeField]
-    private GameObject neutralCamera; //第一のカメラ
-    private Vector3 neutralCameraPos;  //第一カメラのポジション
-    private Quaternion neutralCameraAngle;//第一カメラのアングル
+    private GameObject frontCameraPositionR; //第一のカメラ
+    CameraParameter frontCameraPParameterR;
 
     [SerializeField]
-    private GameObject questionCamera; //第二のカメラ
-    private Vector3 questionCameraPos;  //第二カメラのポジション
-    private Quaternion questionCameraAngle;//第二カメラのアングル
+    private GameObject frontCameraPositionL; //第二のカメラ
+    CameraParameter frontCameraPParameterL;
 
-
-    private Vector3 currentPosition, targetPosition;
-    private Quaternion currentAngle,targetAngle;
 
     float smoothSpeed = 3.0f;
 
@@ -32,61 +53,27 @@ public class CameraControl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
-        //カメラを設定
-        neutralCameraPos = neutralCamera.transform.localPosition;
-        neutralCameraAngle = neutralCamera.transform.rotation;
-        questionCameraPos = questionCamera.transform.localPosition;
-        questionCameraAngle = questionCamera.transform.rotation;
-
-        currentPosition = neutralCameraPos;
-        targetPosition = questionCameraPos;
-        currentAngle = neutralCameraAngle;
-        targetAngle = questionCameraAngle;
-
-
+        //カメラの設定
+        frontCameraPParameterR.Init(frontCameraPositionR.transform.position, frontCameraPositionR.transform.rotation);
+        frontCameraPParameterL.Init(frontCameraPositionL.transform.position, frontCameraPositionL.transform.rotation);
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("a"))
-        {
-            Debug.Log("sssss");
-            ChangeTargetPosition();
-        }
 
 
-        if (Vector3.Distance(currentPosition, targetPosition) <= 0.00001)
-        {
-            currentPosition = targetPosition;
-            currentAngle = targetAngle;
-        }
-        else
-        {
-            currentPosition = Vector3.Lerp(currentPosition, targetPosition, Time.deltaTime * smoothSpeed);
-            currentAngle =Quaternion.Lerp(currentAngle,targetAngle, Time.deltaTime * smoothSpeed);
-            mainCamera.transform.localPosition = currentPosition;
-            mainCamera.transform.rotation = currentAngle;
 
-        }
     }
+    //public void Chenge()
+    //{
+    //}
 
-    void ChangeTargetPosition()
+    public CameraParameter LerpCamera(CameraParameter _aimCamera, CameraParameter _mainCamera,float _t,CameraParameter _ret)
     {
-        //neutralならば
-        if (!nowFlag)
-        {
-            targetPosition = questionCameraPos;
-            targetAngle = questionCameraAngle;
-            nowFlag = true;
-        }
-        else
-        {
-            targetPosition = neutralCameraPos;
-            targetAngle = neutralCameraAngle;
-            nowFlag = false;
-        }
+        _ret.position = Vector3.Lerp(_aimCamera.position, _mainCamera.position,Time.deltaTime * _t);
+        _ret.angle = Quaternion.Lerp(_aimCamera.angle, _mainCamera.angle, Time.deltaTime * _t);
+        return _ret;
     }
 }

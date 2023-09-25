@@ -29,6 +29,7 @@ public enum GameType
     BlackJack,
     Baccarat,
 }
+[System.Serializable]
 public struct CardData
 {
     public CardCamp camp;
@@ -37,7 +38,7 @@ public struct CardData
     public int Number;
 }
 
-
+[System.Serializable]
 //GameType  :ゲームの種類     （ポーカーなど）
 //CardData  :カードデータ     5枚セット（ゲームによっては５枚使わないため”データ無し”が必要）
 //PulusChip :増減する枚数     勝利による倍率以外での増加枚数
@@ -55,4 +56,18 @@ public struct GameData
         magnitude = 0;
     }
 
+}
+
+public enum GameStageProgress
+{
+    Walking,
+    Thinking,
+    Result,
+    Ending,
+}
+public enum BetState
+{
+    R,
+    L,
+    N,
 }

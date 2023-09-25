@@ -2,8 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 public class ChipGenerator : MonoBehaviour
 {
+    [SerializeField]TextMeshProUGUI text;
     enum ChipRate //チップのレート
     {
         low,
@@ -41,6 +43,13 @@ public class ChipGenerator : MonoBehaviour
 
     Dictionary<ChipRate, int> RateDic;
     Dictionary<ChipRate, int> RateDicNow;
+
+    public int ChipNum()
+    {
+        return chipNum;
+    }
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -101,13 +110,12 @@ public class ChipGenerator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        text.text = chipNum.ToString();
         // 1キー押下で現在位置をセーブする
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             int i = UnityEngine.Random.Range(0, 10);
             Debug.Log(i);
-            AddChipLow();
         }
 
         // 2キー押下で現在位置をロードする
@@ -182,17 +190,25 @@ public class ChipGenerator : MonoBehaviour
         RateDicNow[ChipRate.low] = l;
     }
 
-    public void AddChipLow()
+    public int GetChipNum()
     {
-        chipNum += CHIP_LOW_RATE;
-        Debug.Log(chipNum);
+        return chipNum;
     }
-    public void AddChipMid()
+    public void SetChip(int _num)
     {
-        chipNum += CHIP_MIDIUM_RATE;
+        chipNum = _num;
     }
-    public void AddChipHigh()
-    {
-        chipNum += CHIP_HIGH_RATE;
-    }
+    //public void AddChipLow()
+    //{
+    //    chipNum += CHIP_LOW_RATE;
+    //    Debug.Log(chipNum);
+    //}
+    //public void AddChipMid()
+    //{
+    //    chipNum += CHIP_MIDIUM_RATE;
+    //}
+    //public void AddChipHigh()
+    //{
+    //    chipNum += CHIP_HIGH_RATE;
+    //}
 }

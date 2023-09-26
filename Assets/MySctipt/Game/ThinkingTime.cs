@@ -8,7 +8,7 @@ public class ThinkingTime : MonoBehaviour
     float t=0;
     [SerializeField] Slider slider;
     [SerializeField] TextMeshProUGUI text;
-    private const float SLIDER_MAX_VALUE=5.0f;
+    private const float SLIDER_MAX_VALUE=30.0f;
 
     bool startFlag;
     private void Start()
@@ -31,6 +31,7 @@ public class ThinkingTime : MonoBehaviour
         if(slider.value>=SLIDER_MAX_VALUE)
         {
             startFlag = false;
+            slider.value = 0;
             return true;
         }
         return false;

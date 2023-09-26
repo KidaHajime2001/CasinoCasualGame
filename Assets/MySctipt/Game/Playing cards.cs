@@ -67,9 +67,11 @@ public class Playingcards : MonoBehaviour
             spadeList[i].transform.localScale = new Vector3(ADJUSTMENT_CARD_SCALE, ADJUSTMENT_CARD_SCALE, ADJUSTMENT_CARD_SCALE);
             
             var rig =spadeList[i].GetComponent<Rigidbody>();
+
             if(rig)
             {
                 rig.useGravity = false;
+                
             }
 
             playCardDataS[i].Init(Suit.Spade,i,spadeList[i]);
@@ -119,8 +121,16 @@ public class Playingcards : MonoBehaviour
     public void AdventCard(Vector3 _position,Quaternion _rotate,Suit _suit,int _number)
     {
        
-        Instantiate(dataDic[_suit][_number].GetGameObject(), _position,_rotate);
-
-            dataDic[_suit][_number].GetGameObject().GetComponent<BoxCollider>().enabled = false;
+        var obj =  Instantiate(dataDic[_suit][_number].GetGameObject(), _position,_rotate);
+        //Debug.Log(dataDic[_suit][_number].GetGameObject());
+        //Debug.Log(_suit);
+        //Debug.Log(_number);
+        var colider = obj.GetComponent<BoxCollider>();
+        if (colider)
+        {
+            Destroy(colider);
+        }
+        obj.transform.localScale = new Vector3(15, 15, 15);
+        Debug.Log(obj);
     }
 }

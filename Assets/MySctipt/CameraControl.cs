@@ -80,7 +80,6 @@ public class CameraControl : MonoBehaviour
         middleCameraPParameter.Init(middleCameraPosition.transform.position,middleCameraPosition.transform.rotation);
 
         mainCameraPParameter.Init(mainCamera.transform.position,mainCamera.transform.rotation);
-        Debug.Log(mainCameraPParameter.position);
         nowCameraParameter= mainCameraPParameter;
         aimCameraParameter = mainCameraPParameter;
     }
@@ -199,8 +198,6 @@ public class CameraControl : MonoBehaviour
             //タッチを検出
             if (direction == "touch")
             {
-                //タッチの処理
-                Debug.Log("タッチ");
             }
             isTouch = false;
         }

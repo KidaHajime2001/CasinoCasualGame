@@ -9,8 +9,8 @@ using UnityEditor;
 using Newtonsoft.Json;
 public class GameDataManager : MonoBehaviour
 {
-    [SerializeField]
-   private GameData Data;
+   // [SerializeField]
+   //private GameData Data;
     public GameData gameData;
 
     public GameObject inputFieldObj;
@@ -29,7 +29,7 @@ public class GameDataManager : MonoBehaviour
         _dataPath = Application.persistentDataPath + "/GameWaveData1.json";
 
         gameData = LoadGameData(_dataPath);
-        Debug.Log(Data);
+        //Debug.Log(Data);
     }
     public void InputText()
     {
@@ -59,6 +59,7 @@ public class GameDataManager : MonoBehaviour
     public GameData LoadGameData(string dataPath)
     {
         Debug.Log("Loading..."+dataPath);
+
         if (!File.Exists(dataPath))
         {
             Debug.Log("ƒtƒ@ƒCƒ‹‚ªŒ©“–‚½‚è‚Ü‚¹‚ñ‚Å‚µ‚½");
@@ -75,6 +76,7 @@ public class GameDataManager : MonoBehaviour
 
         //return JsonUtility.FromJson<List<GameWave>>(json);
         return JsonConvert.DeserializeObject<GameData>(json);
+       
     }
     public string GetDataPath(string _fileName)
     {

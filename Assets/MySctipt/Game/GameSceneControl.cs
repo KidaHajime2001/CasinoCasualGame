@@ -36,16 +36,19 @@ public class GameSceneControl : MonoBehaviour
     [SerializeField] ChipGenerator chipGenerator;
 
     [SerializeField] ClearEffect effect;
+    [SerializeField] GameObject posE1;
+    [SerializeField] GameObject posE2;
+
     bool GameClear = false;
     float magnitude=0;
     int clearPulus = 0;
 
     [SerializeField] Result result;
 
-
+    bool firstFlag = false;
     private void Start()
     {
-        Debug.Log(effect);
+        //制限時間
         thinkingTime = qTimeUi.GetComponent<ThinkingTime>();
         cameraControl = cameraController.GetComponent<CameraControl>();
         progress = GameStageProgress.Walking;
@@ -57,6 +60,7 @@ public class GameSceneControl : MonoBehaviour
         }
         player.transform.position = checkPoints[0].Position;
         NextPosition();
+
     }
     public void StartGame()
     {
@@ -70,44 +74,66 @@ public class GameSceneControl : MonoBehaviour
         switch (progress)
         {
             case GameStageProgress.Walking:
-                nowAimPosition = checkPoints[nowWave].Position;
-                player.transform.position = Vector3.Lerp(player.transform.position, nowAimPosition, Time.deltaTime * walkSpeed);
+                if (!firstFlag)
+                {
+                    await Task.Delay(3000);
+                    firstFlag = true ;
+                }
+                nowAimPosition = checkPoints[nowWave].Position;//次に移動する位置を選択
+                player.transform.position = Vector3.Lerp(player.transform.position, nowAimPosition, Time.deltaTime * walkSpeed);//移動
+
+                //もし移動が完了したら
                 if(Vector3.Distance(player.transform.position,nowAimPosition)<=0.5f)
                 {
+                    //課題に進行度を移す
                     progress = GameStageProgress.Thinking;
+                    
+                    //カメラを課題用に変更
                     cameraControl.SetMiddle();
+
+                    //制限時間のカウント開始
                     thinkingTime.StartCount();
                     
                 }
                 break;
+
             case GameStageProgress.Thinking:
+                //もし制限時間に達したら
                 if(thinkingTime.Count())
                 {
+                    //進行度を結果発表に移す
                     progress=GameStageProgress.Result;
+                    //勝敗をチェックする
                     CheckResult();
+                    //カメラを移動用に変更する
                     cameraControl.SetFar();
                     
                 }
                 break;
             case GameStageProgress.Result:
-                bet.GetBetState();
                 
+                //ゲームクリアフラグが立っていたら
                 if(GameClear)
                 {
+                    //エフェクトを起動
                     effect.StartClearEffect();
+                    //ゲームクリアのフラグを折る
                     GameClear = false;
+                    //チップをセット
                     chipGenerator.SetChip((bet.GetBetNum()*(int)magnitude)+clearPulus);
+                    //演出用の時間を確保
                     await Task.Delay(3000);
+                    //次の位置へ
                     NextPosition();
                 }
                 break;
             case GameStageProgress.Ending:
+                //ステージリザルトへ
                 result.SetFlag(chipGenerator.GetChipNum());
                 break;
         }
-
+        //カメラに進行度を設定
         cameraControl.SetProgress(progress);
-        Debug.Log(progress);
 
 
     }
@@ -116,13 +142,14 @@ public class GameSceneControl : MonoBehaviour
     {
         progress = GameStageProgress.Walking;
         checkPoints[nowWave].NextFlag = true;
-        if (nowWave+1<checkPoints.Count())
+        if (nowWave<checkPoints.Count())
         {
             nowWave++;
         }
         else
         {
             progress = GameStageProgress.Ending;
+            Debug.Log("Ending");
         }
         
     }
@@ -136,10 +163,7 @@ public class GameSceneControl : MonoBehaviour
         {
             if (dealL.GetResult())
             {
-                GameClear = true;
-                clearPulus=dealL.GetPulus();
-                magnitude = dealL.GetMagnitude();
-                Debug.Log("GAMECLEAR!");
+                InitClearData();
             }
             else
             {
@@ -150,10 +174,7 @@ public class GameSceneControl : MonoBehaviour
         {
             if (dealR.GetResult())
             {
-                GameClear = true;
-                clearPulus = dealL.GetPulus();
-                magnitude = dealL.GetMagnitude();
-                Debug.Log("GAMECLEAR!");
+                InitClearData();
             }
             else
             {
@@ -163,5 +184,13 @@ public class GameSceneControl : MonoBehaviour
         }
         
         
+    }
+    void InitClearData()
+    {
+        GameClear = true;
+        clearPulus = dealL.GetPulus();
+        magnitude = dealL.GetMagnitude();
+        bet.ResetBetState();
+        Debug.Log("GAMECLEAR!:"+nowWave+":"+ checkPoints.Count());
     }
 }

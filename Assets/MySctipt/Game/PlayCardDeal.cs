@@ -40,10 +40,11 @@ public class PlayCardDeal : MonoBehaviour
 
         gameDataManager = this.AddComponent<GameDataManager>();
         gameData = gameDataManager.LoadGameData( gameDataManager.GetDataPath(firstStageFile));
-
+        
         foreach(CardCamp _camp in Enum.GetValues(typeof(CardCamp)))
         {
             AdventPokerCard(_camp);
+            Debug.Log(_camp);
         }
 
         nameText=gameNameText.GetComponent<TextMeshProUGUI>();
@@ -77,7 +78,6 @@ public class PlayCardDeal : MonoBehaviour
                 var pos = campPosDic[_camp];
                 pos.x += (ADJUSTMENT_CARDPOS_X * (i-2));
                 pos.z += (ADJUSTMENT_CARDPOS_Z * i);
-                Debug.Log(cardData.Number - 1);
                 plCards.AdventCard(pos,q,cardData.suit,cardData.Number-1);
                 i++;
             }

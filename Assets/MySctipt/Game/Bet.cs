@@ -2,17 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.Rendering.Universal;
+
 public class Bet : MonoBehaviour
 {
     [SerializeField] GameObject chipImg;
     [SerializeField] GameObject chipImgPosL;
     [SerializeField] GameObject chipImgPosR;
-    [SerializeField] TextMeshProUGUI text; 
-   
+
+    [SerializeField] GameObject chipImgPosLSecond;
+    [SerializeField] GameObject chipImgPosRSecond;
+    [SerializeField] TextMeshProUGUI text;
+
+    private Vector3 nowChipPosL;
+    private Vector3 nowChipPosR;
     BetState betState;
     private int betNum = 0;
+    private int betSum = 0;
     private int betMax = 0;
-    private int betNow = 0;
     [SerializeField] ChipGenerator chipGenerator;
 
 
@@ -21,9 +28,11 @@ public class Bet : MonoBehaviour
     void Start()
     {
         
+        nowChipPosL =   chipImgPosL.transform.position;
+        nowChipPosR = chipImgPosR.transform.position;
         betState = BetState.N;
 
-        betNow=betMax=chipGenerator.GetChipNum();
+        betMax=chipGenerator.GetChipNum();
     }
 
     // Update is called once per frame
@@ -32,11 +41,11 @@ public class Bet : MonoBehaviour
         text.text = betNum.ToString();
         if (betState == BetState.R)
         {
-            chipImg.transform.position = chipImgPosR.transform.position;
+            chipImg.transform.position =nowChipPosR;
         }
         else if(betState == BetState.L)
         {
-            chipImg.transform.position = chipImgPosL.transform.position;
+            chipImg.transform.position = nowChipPosL;
         }
         else
         {
@@ -62,30 +71,39 @@ public class Bet : MonoBehaviour
     {
         return betNum;
     }
+
+    public void ResetBetState()
+    {
+        betState=BetState.N;
+        nowChipPosL = chipImgPosLSecond.transform.position;
+        nowChipPosR = chipImgPosRSecond.transform.position;
+    }
     public void Bet1()
     {
-        if(betNum+1<=betMax||betNow-1>=0)
+        
+        betNum += 1;
+        if (betMax <= betNum)
         {
-            betNum += 1;
-            betNow -= 1;
+            betNum = betMax;
         }
     }
     public void Bet10()
     {
-        if (betNum + 10 <= betMax || betNow - 1 >= 0)
+        betNum += 10;
+
+        if (betMax <= betNum)
         {
-            betNum += 10;
-            betNow -= 10;
+            betNum = betMax;
         }
     }
     public void Bet100()
     {
-        if (betNum + 100 <= betMax || betNow - 1 >= 0)
+        betNum += 100;
+
+        if (betMax <= betNum)
         {
-            betNum += 100;
-            betNow -= 100;
+            betNum = betMax;
         }
-        
     }
 
 }

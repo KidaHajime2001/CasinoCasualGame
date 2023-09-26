@@ -12,9 +12,8 @@ public class JsonDataManager: MonoBehaviour
     {
         _dataPath = Application.persistentDataPath + "/PlayerChipData.json";
 
-        Debug.Log(Application.persistentDataPath);
         _data = LoadData(_dataPath);
-        Debug.Log(_data);
+
         if(!_data.GetFirstPlayFlag())
         {
             _data.InitData();

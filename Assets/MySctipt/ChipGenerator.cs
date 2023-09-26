@@ -26,7 +26,7 @@ public class ChipGenerator : MonoBehaviour
 
     //debug
     WaitForSeconds waitForSeconds = new WaitForSeconds(0.3f);
-    private int chipNum = 100;
+    private int chipNum = 300;
     private int beforeChipNum;
     private int lowNum = 0;
     private int midiumNum = 0;
@@ -140,9 +140,9 @@ public class ChipGenerator : MonoBehaviour
                 for (int i = 0; i < sub; i++)
                 {
 
-                    Debug.Log(RateDicNow[rate]);
-                    Debug.Log(RateDic[rate]);
-                    Debug.Log("sub:"+sub);
+                    //Debug.Log(RateDicNow[rate]);
+                    //Debug.Log(RateDic[rate]);
+                    //Debug.Log("sub:"+sub);
                     poolManager[(int)rate].SpawnGameObject(spawnPoint[(int)rate].transform.position, spawnPoint[(int)rate].transform.rotation);
                 }
             }

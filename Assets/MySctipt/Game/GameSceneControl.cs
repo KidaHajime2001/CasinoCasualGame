@@ -5,16 +5,29 @@ using System.Linq;
 using  System.Threading.Tasks;
 public class GameSceneControl : MonoBehaviour
 {
+    enum CheckPointType
+    {
+        Other,
+        End,
+    }
+
     struct CheckPoint
     {
         public Vector3 Position;
-        public bool NextFlag;
+        public CheckPointType cP;
         public void Init(Vector3 vec)
         {
             Position = vec;
-            NextFlag = false;
+            cP = CheckPointType.Other;
         }
     }
+    [System.Serializable]
+    public struct DealWave
+    {
+       public  PlayCardDeal dealL;
+       public  PlayCardDeal dealR;
+    }
+
     GameStageProgress progress;
     [SerializeField] List<GameObject> objPoint;
     [SerializeField] GameObject cameraController;
@@ -22,8 +35,16 @@ public class GameSceneControl : MonoBehaviour
 
     private CheckPoint[] checkPoints;
     private int nowWave;
+    private int qWave;
+
     [SerializeField] private GameObject player;
+
+
     private Vector3 nowAimPosition;
+    private Vector3 firstPosition;
+    private float f = 0;
+
+
     [SerializeField]
     private float walkSpeed;
     
@@ -31,36 +52,49 @@ public class GameSceneControl : MonoBehaviour
     ThinkingTime thinkingTime;
 
     [SerializeField] Bet bet;
-    [SerializeField] PlayCardDeal dealL;
-    [SerializeField] PlayCardDeal dealR;
+    [SerializeField] List<DealWave> dealWave;
+    
+
     [SerializeField] ChipGenerator chipGenerator;
 
-    [SerializeField] ClearEffect effect;
-    [SerializeField] GameObject posE1;
-    [SerializeField] GameObject posE2;
+    [SerializeField] List<ClearEffect> effect;
+    private int eCount=0;
 
     bool GameClear = false;
     float magnitude=0;
     int clearPulus = 0;
 
     [SerializeField] Result result;
-
+    Dictionary<BetState, PlayCardDeal> BP;
     bool firstFlag = false;
+    //カウントアップ
+    private float countup = 0.0f;
+    private float timeLimit = 3.0f;
     private void Start()
     {
+        BP = new Dictionary<BetState, PlayCardDeal>();
+       
+
         //制限時間
         thinkingTime = qTimeUi.GetComponent<ThinkingTime>();
         cameraControl = cameraController.GetComponent<CameraControl>();
         progress = GameStageProgress.Walking;
         nowWave = 0;
+        qWave = 0;
         checkPoints = new CheckPoint[objPoint.Count];
         for(int i=0; i<objPoint.Count;i++)
         {
             checkPoints[i].Position = objPoint[i].transform.position;
+            if((i+1)== objPoint.Count)
+            {
+                checkPoints[i].cP=CheckPointType.End;
+            }
         }
         player.transform.position = checkPoints[0].Position;
-        NextPosition();
 
+
+        UpdateDIC();
+        NextPosition();
     }
     public void StartGame()
     {
@@ -80,11 +114,13 @@ public class GameSceneControl : MonoBehaviour
                     firstFlag = true ;
                 }
                 nowAimPosition = checkPoints[nowWave].Position;//次に移動する位置を選択
-                player.transform.position = Vector3.Lerp(player.transform.position, nowAimPosition, Time.deltaTime * walkSpeed);//移動
-
+               f+= Time.deltaTime;
+                player.transform.position = Vector3.Lerp(firstPosition, nowAimPosition,f *walkSpeed);//移動
+               
                 //もし移動が完了したら
                 if(Vector3.Distance(player.transform.position,nowAimPosition)<=0.5f)
                 {
+                    await Task.Delay(1000);
                     //課題に進行度を移す
                     progress = GameStageProgress.Thinking;
                     
@@ -105,31 +141,55 @@ public class GameSceneControl : MonoBehaviour
                     progress=GameStageProgress.Result;
                     //勝敗をチェックする
                     CheckResult();
-                    //カメラを移動用に変更する
-                    cameraControl.SetFar();
+
                     
                 }
                 break;
             case GameStageProgress.Result:
                 
                 //ゲームクリアフラグが立っていたら
-                if(GameClear)
+                if(GameClear&& BP[BetState.R].GetReverseComplete()&& BP[BetState.L].GetReverseComplete())
                 {
-                    //エフェクトを起動
-                    effect.StartClearEffect();
-                    //ゲームクリアのフラグを折る
-                    GameClear = false;
-                    //チップをセット
-                    chipGenerator.SetChip((bet.GetBetNum()*(int)magnitude)+clearPulus);
-                    //演出用の時間を確保
-                    await Task.Delay(3000);
-                    //次の位置へ
-                    NextPosition();
+                    countup += Time.deltaTime;
+                    if(countup>=timeLimit)
+                    {
+                        countup = 0;
+                        Debug.Log("WAVE:" + nowWave);
+                        UpdateDIC();
+                        //カメラを移動用に変更する
+                        cameraControl.SetFar();
+
+                        //エフェクトを起動
+                        effect[eCount].StartClearEffect();
+                        eCount++;
+                        //ゲームクリアのフラグを折る
+                        GameClear = false;
+                        //チップをセット
+                        chipGenerator.SetChip((bet.GetBetNum() * (int)magnitude) + clearPulus);
+                        bet.ResetRimmit();
+                        //演出用の時間を確保
+                        await Task.Delay(3000);
+                        //次の位置へ
+                        NextPosition();
+
+                    }
+
                 }
                 break;
             case GameStageProgress.Ending:
-                //ステージリザルトへ
-                result.SetFlag(chipGenerator.GetChipNum());
+                nowAimPosition = checkPoints[nowWave].Position;//次に移動する位置を選択4
+                f += Time.deltaTime * walkSpeed;
+                player.transform.position = Vector3.Lerp(firstPosition, nowAimPosition,f);//移動
+                if (Vector3.Distance(player.transform.position, nowAimPosition) <= 0.5f)
+                {
+                    countup += Time.deltaTime;
+                    if (countup >= timeLimit)
+                    {
+                        //ステージリザルトへ
+                        result.SetFlag(chipGenerator.GetChipNum());
+                    }
+                    
+                }
                 break;
         }
         //カメラに進行度を設定
@@ -141,17 +201,14 @@ public class GameSceneControl : MonoBehaviour
     public void NextPosition()
     {
         progress = GameStageProgress.Walking;
-        checkPoints[nowWave].NextFlag = true;
-        if (nowWave<checkPoints.Count())
-        {
-            nowWave++;
-        }
-        else
+        nowWave++;
+        f = 0;
+        firstPosition = player.transform.position;
+        if (checkPoints[nowWave].cP == CheckPointType.End)
         {
             progress = GameStageProgress.Ending;
-            Debug.Log("Ending");
         }
-        
+
     }
     public GameStageProgress GetProgress()
     {
@@ -161,36 +218,40 @@ public class GameSceneControl : MonoBehaviour
     {
         if(bet.GetBetState() == BetState.L)
         {
-            if (dealL.GetResult())
-            {
-                InitClearData();
-            }
-            else
-            {
-                Debug.Log("GAMEOVER!");
-            }
+            InitClearData(bet.GetBetState());
+
         }
         else if(bet.GetBetState() == BetState.R)
         {
-            if (dealR.GetResult())
-            {
-                InitClearData();
-            }
-            else
-            {
-
-                Debug.Log("GAMEOVER!");
-            }
+            InitClearData(bet.GetBetState());
         }
-        
+        BP[BetState.R].ReverseCard();
+        BP[BetState.L].ReverseCard();
+        Debug.Log("Bet:"+bet.GetBetState()+"R/L:"+BP[BetState.R].GetResult()+"/"+ BP[BetState.L].GetResult() + "/nowwave:"+nowWave);
+
+        qWave++;
         
     }
-    void InitClearData()
+    void InitClearData(BetState _state )
     {
+        
         GameClear = true;
-        clearPulus = dealL.GetPulus();
-        magnitude = dealL.GetMagnitude();
+
+        clearPulus = BP[_state].GetPulus();
+        magnitude = BP[_state].GetMagnitude();
+        
         bet.ResetBetState();
-        Debug.Log("GAMECLEAR!:"+nowWave+":"+ checkPoints.Count());
+
+    }
+    void UpdateDIC()
+    {
+        Debug.Log("Qwall2R"+qWave);
+        if(qWave>=dealWave.Count)
+        {
+            return;
+        }
+        BP[BetState.R] =dealWave[qWave].dealR;
+        BP[BetState.L] = dealWave[qWave].dealL;
+
     }
 }

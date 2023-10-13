@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using TMPro;
 public class Result : MonoBehaviour
 {
     [SerializeField] List<GameObject> star;
@@ -12,6 +12,8 @@ public class Result : MonoBehaviour
 
     private Quaternion _startRotation;
     private Quaternion _endRotation;
+    [SerializeField] TextMeshProUGUI uiText;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -44,6 +46,7 @@ public class Result : MonoBehaviour
     public void SetFlag(int _score)
     {
         gameObject.SetActive(true);
+        uiText.text = _score.ToString();
         if(_score>=100)
         {
             rotSet[0] = true;
@@ -55,7 +58,7 @@ public class Result : MonoBehaviour
 
             star[1].SetActive(true);
         }
-        if (_score >= 10000)
+        if (_score >= 5000)
         {
             rotSet[2] = true;
 
@@ -69,7 +72,7 @@ public class Result : MonoBehaviour
         _countTime = Mathf.Clamp(_countTime + Time.deltaTime, 0f, 5.0f);
         float rate = _countTime / 5.0f;
 
-        _star.transform.localScale = Vector3.Lerp(_star.transform.localScale,new Vector3(0.8f, 0.8f, 0.8f),rate);
+        _star.transform.localScale = Vector3.Lerp(_star.transform.localScale,new Vector3(2.0f, 2.0f, 2.0f),rate);
         _star.transform.rotation = Quaternion.Lerp(_star.transform.rotation, Quaternion.Euler(360,0,0), rate);
 
         if (rate >= 1f)

@@ -32,12 +32,13 @@ public class Bet : MonoBehaviour
         nowChipPosR = chipImgPosR.transform.position;
         betState = BetState.N;
 
-        betMax=chipGenerator.GetChipNum();
+        ResetRimmit();
     }
 
     // Update is called once per frame
     void Update()
     {
+        Debug.Log(betMax);
         text.text = betNum.ToString();
         if (betState == BetState.R)
         {
@@ -105,5 +106,8 @@ public class Bet : MonoBehaviour
             betNum = betMax;
         }
     }
-
+    public void ResetRimmit()
+    {
+        betMax = chipGenerator.GetChipNum();
+    }
 }

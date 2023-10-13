@@ -38,7 +38,7 @@ public class GameDataManager : MonoBehaviour
     public void CreateGameData()
     {
         Debug.Log(inputField.text);
-        _InputPath = Application.dataPath + "/JsonFile/"+inputField.text+".json";
+        _InputPath = Application.dataPath + "/"+inputField.text+".json";
         Debug.Log("CreateData:" + _InputPath);
         LoadGameData(_InputPath);
         SaveGameData(gameData,_InputPath);
@@ -80,7 +80,7 @@ public class GameDataManager : MonoBehaviour
     }
     public string GetDataPath(string _fileName)
     {
-        return Application.dataPath + "/JsonFile/" + _fileName + ".json";
+        return Application.streamingAssetsPath+"/"+ _fileName + ".json";
     }
 
 

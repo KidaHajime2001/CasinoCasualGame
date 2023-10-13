@@ -1,5 +1,4 @@
-using System;
-using System.Collections;
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -53,7 +52,7 @@ public class Playingcards : MonoBehaviour
 
     Dictionary<Suit, PlayCardData[]> dataDic;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         dataDic=new Dictionary<Suit, PlayCardData[]>();
         dataDic[Suit.Spade]=playCardDataS;
@@ -118,19 +117,20 @@ public class Playingcards : MonoBehaviour
     void Update()
     {
     }
-    public void AdventCard(Vector3 _position,Quaternion _rotate,Suit _suit,int _number)
+    public GameObject AdventCard(Vector3 _position,Quaternion _rotate,Suit _suit,int _number)
     {
-       
-        var obj =  Instantiate(dataDic[_suit][_number].GetGameObject(), _position,_rotate);
-        //Debug.Log(dataDic[_suit][_number].GetGameObject());
-        //Debug.Log(_suit);
-        //Debug.Log(_number);
-        var colider = obj.GetComponent<BoxCollider>();
-        if (colider)
+        if (dataDic[_suit][_number].GetGameObject())
         {
-            Destroy(colider);
+            var obj = Instantiate(dataDic[_suit][_number].GetGameObject(), _position, _rotate);
+            var colider = obj.GetComponent<BoxCollider>();
+            if (colider)
+            {
+                Destroy(colider);
+            }
+            obj.transform.localScale = new Vector3(15, 15, 15);
+            return obj;
         }
-        obj.transform.localScale = new Vector3(15, 15, 15);
-        Debug.Log(obj);
+        return null;
     }
+        
 }

@@ -39,6 +39,5 @@ public class ThinkingTime : MonoBehaviour
     public void StartCount()
     {
         startFlag = true;
-
     }
 }

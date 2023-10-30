@@ -10271,6 +10271,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1807318470}
+  - component: {fileID: 1807318471}
   - component: {fileID: 1807318468}
   - component: {fileID: 1807318469}
   m_Layer: 0
@@ -10287,7 +10288,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1807318467}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 19ef9d71fcecc0b4e865f50fc17d5082, type: 3}
   m_Name: 
@@ -10341,6 +10342,26 @@ Transform:
   m_Father: {fileID: 2068337131}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1807318471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1807318467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd8dd954a1085b94789b402303ce7f1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 1599753186}
+  walkSpeed: 0.2
+  eventLocations:
+  - {fileID: 718798553}
+  - {fileID: 1081069192}
+  - {fileID: 1872566893}
+  - {fileID: 269288781}
+  camControl: {fileID: 237187845}
 --- !u!1 &1825623933
 GameObject:
   m_ObjectHideFlags: 0
@@ -10634,15 +10655,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7736790154115379491, guid: 4cd66c59f0201a546b05b20f4b803dbf, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.00000047267403
+      value: 0.00000047683716
       objectReference: {fileID: 0}
     - target: {fileID: 7736790154115379491, guid: 4cd66c59f0201a546b05b20f4b803dbf, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.511959
+      value: 2.499998
       objectReference: {fileID: 0}
     - target: {fileID: 7736790154115379491, guid: 4cd66c59f0201a546b05b20f4b803dbf, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -11.413504
+      value: -11.170004
       objectReference: {fileID: 0}
     - target: {fileID: 7736790154115379491, guid: 4cd66c59f0201a546b05b20f4b803dbf, type: 3}
       propertyPath: m_LocalRotation.w
@@ -10702,7 +10723,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1872566894}
   m_Layer: 0
-  m_Name: ChickPoint1
+  m_Name: ChickPoint2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

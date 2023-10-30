@@ -104,7 +104,6 @@ public class GameSceneControl : MonoBehaviour
 
     private async void Update()
     {
-        
         switch (progress)
         {
             case GameStageProgress.Walking:

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TutorialSceneController : MonoBehaviour
 {
@@ -29,11 +30,23 @@ public class TutorialSceneController : MonoBehaviour
     float deltaTimeCounter = 0.0f;
     Vector3 nowPos;
     Vector3 aimPos;
+    Vector3 fingerAimPos;
+    bool fingerRoundTripFlag = false;
+    bool pressedLeftButton = false;
 
     [SerializeField] GameObject player;
     [SerializeField] float walkSpeed;
     [SerializeField] List<GameObject> eventLocations;
     [SerializeField] CameraControl camControl;
+    [SerializeField] Button leftButton;
+    [SerializeField] Button rightButton;
+    [SerializeField] GameObject bet1;
+    [SerializeField] GameObject bet10;
+    [SerializeField] GameObject bet100;
+    [SerializeField] GameObject finger;
+    [SerializeField] float fingerSpeed;
+    [SerializeField] float fingerMagnification;
+    [SerializeField] float fingerScalingSpeed;
 
     int currentLocation = 0;
 
@@ -41,8 +54,15 @@ public class TutorialSceneController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // ■初期化
+        // プレイヤーの位置を開始位置に設定
         player.transform.position = eventLocations[0].transform.position;
+        // 左右の選択ボタンを無効化
+        leftButton.interactable = false;
+        rightButton.interactable = false;
+        // 指を非表示
+        finger.SetActive(false);
+        finger.transform.position = leftButton.transform.position;
+        
         // 初期コイン枚数111枚
 
         this.ToNextProgress();
@@ -51,10 +71,10 @@ public class TutorialSceneController : MonoBehaviour
     // Update is called once per frame
     async void Update()
     {
-        switch(this.progress)
+        switch (this.progress)
         {
             case TutorialProgress.Walking:
-                if(!this.hasWalked)
+                if (!this.hasWalked)
                 {
                     await Task.Delay(3000);
                     this.hasWalked = true;
@@ -65,14 +85,18 @@ public class TutorialSceneController : MonoBehaviour
                 // 移動処理
                 this.player.transform.position = Vector3.Lerp(this.nowPos, this.aimPos, this.deltaTimeCounter * this.walkSpeed);
                 // 移動が完了した場合
-                if(Vector3.Distance(this.player.transform.position, this.aimPos) <= 0.5f)
+                if (Vector3.Distance(this.player.transform.position, this.aimPos) <= 0.5f)
                 {
                     await Task.Delay(1000);
                     // 進捗を次に移す
-                    if(isTutorial)
+                    if (isTutorial)
                     {
                         this.progress = TutorialProgress.Selecting;
                         this.normalProgress = GameStageProgress.Thinking;
+
+                        this.finger.SetActive(true);
+                        this.deltaTimeCounter = 0.0f;
+
                     }
                     else
                     {
@@ -82,36 +106,85 @@ public class TutorialSceneController : MonoBehaviour
                     // カメラを課題ように変更
                     this.camControl.SetMiddle();
                 }
-            break;
+                break;
 
             case TutorialProgress.Selecting:
                 // ■Game1
-                // 左を選択させる
-                // 1, 10, 100 それぞれボタンを押させ、111枚賭けさせる
-                // カウントダウンを見せる
-                // 結果を見せる(プラスになる)
+                // 指UIの往復処理
+                if (!this.fingerRoundTripFlag)
+                {
+                    // 左のボタンの位置にいたら
+                    if (Vector3.Distance(this.finger.transform.position, this.leftButton.transform.position) <= 0.5f)
+                    {
+                        this.fingerAimPos = this.rightButton.transform.position;
+                    }
+                    // 右のボタンの位置にいたら
+                    else if (Vector3.Distance(this.finger.transform.position, this.rightButton.transform.position) <= 0.5f)
+                    {
+                        this.fingerAimPos = this.leftButton.transform.position;
+                    }
+                    // 移動処理
+                    // 目標が右のボタンなら
+                    if (this.fingerAimPos == this.rightButton.transform.position)
+                    {
+                        this.deltaTimeCounter += Time.deltaTime;
+                    }
+                    else if (this.fingerAimPos == this.leftButton.transform.position)
+                    {
+                        this.deltaTimeCounter -= Time.deltaTime;
+                    }
+                    this.finger.transform.position = Vector3.Lerp(this.leftButton.transform.position, this.rightButton.transform.position, this.deltaTimeCounter * this.fingerSpeed);
+
+                    // 往復が終わったら
+                    if(Vector3.Distance(this.finger.transform.position, this.leftButton.transform.position) <= 0.5f
+                        && Vector3.Distance(this.fingerAimPos, this.leftButton.transform.position) <= 0.5f)
+                    {
+                        this.fingerRoundTripFlag = true;
+                        this.deltaTimeCounter = 0.0f;
+                    }
+                }
+                else
+                {
+                    // 左のボタンを押せるようにする
+                    this.leftButton.interactable = true;
+                    // 左のボタンを押すように拡大縮小させる
+                    //this.deltaTimeCounter += Time.deltaTime;
+
+                    // 左のボタンが押されたらベットに進む
+                    if(this.pressedLeftButton)
+                    {
+                        await Task.Delay(1000);
+                        this.progress = TutorialProgress.Betting;
+                        this.deltaTimeCounter = 0.0f;
+                    }
+                }
 
                 break;
 
             case TutorialProgress.Betting:
+                // 1, 10, 100 それぞれボタンを押させ、111枚賭けさせる
+                // 1の位置に指を移動
+                this.finger.transform.position = this.bet1.transform.position;
 
-            break;
+                break;
 
             case TutorialProgress.CountingDown:
+                // カウントダウンを見せる
 
-            break;
+                break;
 
             case TutorialProgress.Thinking:
 
-            break;
+                break;
 
             case TutorialProgress.ShowingResult:
+                // 結果を見せる(プラスになる)
 
-            break;
+                break;
 
             case TutorialProgress.Ending:
 
-            break;
+                break;
         }
 
         // カメラに進捗を設定
@@ -143,6 +216,16 @@ public class TutorialSceneController : MonoBehaviour
         if (this.eventLocations.Count-1 == this.currentLocation)
         {
             this.progress = TutorialProgress.Ending;
+        }
+    }
+
+    public void PressedLeftButton()
+    {
+        // 進捗がチュートリアルの選択で
+        // 往復した後、有効になってるときに押した場合
+        if(this.fingerRoundTripFlag && !this.pressedLeftButton)
+        {
+            this.pressedLeftButton = true;
         }
     }
 }

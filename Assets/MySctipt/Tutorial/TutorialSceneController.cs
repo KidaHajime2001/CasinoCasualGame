@@ -31,17 +31,16 @@ public class TutorialSceneController : MonoBehaviour
     Vector3 nowPos;
     Vector3 aimPos;
     Vector3 fingerAimPos;
-    bool fingerRoundTripFlag = false;
-    bool pressedLeftButton = false;
+    [SerializeField]int pressedButtonCount = 0;
+    List<Vector3> selectButtonLocations;
     List<Vector3> betButtonLocations;
+    int fingerStepCount = 0;
 
     [SerializeField] GameObject player;
     [SerializeField] float walkSpeed;
     [SerializeField] List<GameObject> eventLocations;
     [SerializeField] CameraControl camControl;
-    [SerializeField] Button leftButton;
-    [SerializeField] Button rightButton;
-    //[SerializeField] List<Button> selectButtons;
+    [SerializeField] List<Button> selectButtons;
     [SerializeField] List<Button> betButtons;
     [SerializeField] GameObject finger;
     [SerializeField] float fingerSpeed;
@@ -54,25 +53,32 @@ public class TutorialSceneController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        this.selectButtonLocations = new List<Vector3>();
         this.betButtonLocations = new List<Vector3>();
 
         // プレイヤーの位置を開始位置に設定
         player.transform.position = eventLocations[0].transform.position;
         // 左右の選択ボタンを無効化
-        leftButton.interactable = false;
-        rightButton.interactable = false;
+        for (int i = 0; i < this.selectButtons.Count; ++i)
+        {
+            this.selectButtons[i].interactable = false;
+        }
         // ベット用のボタンを無効化
-        for(int i = 0; i < this.betButtons.Count; ++i)
+        for (int i = 0; i < this.betButtons.Count; ++i)
         {
             this.betButtons[i].interactable = false;
         }
         // 指を非表示
         finger.SetActive(false);
-        finger.transform.position = leftButton.transform.position;
-        
-        for(int i = 0; i < betButtons.Count; ++i) 
+
+        // ボタンの座標を配列に記録
+        for (int i = 0; i < this.selectButtons.Count; ++i)
         {
-            betButtonLocations.Add(betButtons[i].transform.position);
+            this.selectButtonLocations.Add(selectButtons[i].transform.position);
+        }
+        for (int i = 0; i < this.betButtons.Count; ++i) 
+        {
+            this.betButtonLocations.Add(betButtons[i].transform.position);
         }
 
         // 初期コイン枚数111枚
@@ -99,7 +105,6 @@ public class TutorialSceneController : MonoBehaviour
                 // 移動が完了した場合
                 if (Vector3.Distance(this.player.transform.position, this.aimPos) <= 0.5f)
                 {
-                    await Task.Delay(1000);
                     // 進捗を次に移す
                     if (isTutorial)
                     {
@@ -109,6 +114,8 @@ public class TutorialSceneController : MonoBehaviour
                         this.finger.SetActive(true);
                         this.deltaTimeCounter = 0.0f;
 
+                        // 指の移動情報を渡す
+                        this.tutoFinger.SetLocations(this.selectButtonLocations);
                     }
                     else
                     {
@@ -122,63 +129,92 @@ public class TutorialSceneController : MonoBehaviour
 
             case TutorialProgress.Selecting:
                 // ■Game1
-                // 指UIの往復処理
-                if (!this.fingerRoundTripFlag)
+                // 移動中でなければ
+                if(!this.tutoFinger.IsMoving())
                 {
-                    // 左のボタンの位置にいたら
-                    if (Vector3.Distance(this.finger.transform.position, this.leftButton.transform.position) <= 0.5f)
+                    switch (this.fingerStepCount)
                     {
-                        this.fingerAimPos = this.rightButton.transform.position;
-                    }
-                    // 右のボタンの位置にいたら
-                    else if (Vector3.Distance(this.finger.transform.position, this.rightButton.transform.position) <= 0.5f)
-                    {
-                        this.fingerAimPos = this.leftButton.transform.position;
-                    }
-                    // 移動処理
-                    // 目標が右のボタンなら
-                    if (this.fingerAimPos == this.rightButton.transform.position)
-                    {
-                        this.deltaTimeCounter += Time.deltaTime;
-                    }
-                    else if (this.fingerAimPos == this.leftButton.transform.position)
-                    {
-                        this.deltaTimeCounter -= Time.deltaTime;
-                    }
-                    this.finger.transform.position = Vector3.Lerp(this.leftButton.transform.position, this.rightButton.transform.position, this.deltaTimeCounter * this.fingerSpeed);
+                        case 0:
+                            // 段階を1増やして移動させる
+                            ++this.fingerStepCount;
+                            this.tutoFinger.MoveToNextStep();
+                            break;
 
-                    // 往復が終わったら
-                    if(Vector3.Distance(this.finger.transform.position, this.leftButton.transform.position) <= 0.5f
-                        && Vector3.Distance(this.fingerAimPos, this.leftButton.transform.position) <= 0.5f)
-                    {
-                        this.fingerRoundTripFlag = true;
-                        this.deltaTimeCounter = 0.0f;
+                        case 1:
+                            // 段階を1増やして移動させる
+                            ++this.fingerStepCount;
+                            this.tutoFinger.MoveToPreviousStep();
+                            break;
+
+                        case 2:
+                            // 左のボタンを押せるようにして、ボタンが押されたらベットに進む
+                            this.selectButtons[0].interactable = true;
+                            if (this.pressedButtonCount == 1)
+                            {
+                                await Task.Delay(1000);
+                                // 左ボタンを押せなくする
+                                this.selectButtons[0].interactable = false;
+                                // 指の移動情報を渡す
+                                this.tutoFinger.SetLocations(this.betButtonLocations);
+                                this.progress = TutorialProgress.Betting;
+                                // 使用した変数の初期化
+                                this.deltaTimeCounter = 0.0f;
+                                this.fingerStepCount = 0;
+                                this.pressedButtonCount = 0;
+                            }
+                            break;
                     }
                 }
-                else
-                {
-                    // 左のボタンを押せるようにする
-                    this.leftButton.interactable = true;
-                    // 左のボタンを押すように拡大縮小させる
-                    //this.deltaTimeCounter += Time.deltaTime;
-
-                    // 左のボタンが押されたらベットに進む
-                    if(this.pressedLeftButton)
-                    {
-                        await Task.Delay(1000);
-                        this.progress = TutorialProgress.Betting;
-                        this.deltaTimeCounter = 0.0f;
-                    }
-                }
-
                 break;
 
             case TutorialProgress.Betting:
 
-                // チュートリアル用の指に移動する
-                this.tutoFinger.SetLocations(this.betButtonLocations);
+                // 移動中でなければ
+                if (!this.tutoFinger.IsMoving())
+                {
+                    switch (this.fingerStepCount)
+                    {
+                        case 0:
+                            // bet1を押せるようにして、ボタンが押されたら次にすすむ
+                            this.betButtons[0].interactable = true;
+                            if(this.pressedButtonCount == 1)
+                            {
+                                ++this.fingerStepCount;
+                                // bet1を押せなくする
+                                this.betButtons[0].interactable = false;
+                                // 指の移動情報を渡す
+                                this.tutoFinger.MoveToNextStep();
+                            }
+                            break;
+                        case 1:
+                            // bet10を押せるようにして、ボタンが押されたら次にすすむ
+                            this.betButtons[1].interactable = true;
+                            if (this.pressedButtonCount == 2)
+                            {
+                                ++this.fingerStepCount;
+                                // bet1を押せなくする
+                                this.betButtons[1].interactable = false;
+                                // 指の移動情報を渡す
+                                this.tutoFinger.MoveToNextStep();
+                            }
+                            break;
+                        case 2:
+                            // bet100を押せるようにして、ボタンが押されたら次にすすむ
+                            this.betButtons[2].interactable = true;
+                            if (this.pressedButtonCount == 3)
+                            {
+                                ++this.fingerStepCount;
+                                // bet1を押せなくする
+                                this.betButtons[2].interactable = false;
+                                // 指の移動情報を渡す
+                                this.tutoFinger.MoveToNextStep();
+                            }
+                            break;
+                    }
+                }
+
                 // 次にベットするボタンを有効にする
-                for(int i = 0; i < this.betButtons.Count; ++i)
+                for (int i = 0; i < this.betButtons.Count; ++i)
                 {
                     if(this.betButtons[i].interactable == true)
                     {
@@ -252,13 +288,8 @@ public class TutorialSceneController : MonoBehaviour
         }
     }
 
-    public void PressedLeftButton()
+    public void PressedButton()
     {
-        // 進捗がチュートリアルの選択で
-        // 往復した後、有効になってるときに押した場合
-        if(this.fingerRoundTripFlag && !this.pressedLeftButton)
-        {
-            this.pressedLeftButton = true;
-        }
+        ++this.pressedButtonCount;
     }
 }

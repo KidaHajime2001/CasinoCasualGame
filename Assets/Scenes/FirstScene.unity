@@ -579,12 +579,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1504004236}
         m_TargetAssemblyTypeName: Bet, Assembly-CSharp
-        m_MethodName: Bet10
-        m_Mode: 1
+        m_MethodName: ToBet
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 10
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -3399,12 +3399,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1504004236}
         m_TargetAssemblyTypeName: Bet, Assembly-CSharp
-        m_MethodName: Bet100
-        m_Mode: 1
+        m_MethodName: ToBet
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 100
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -5823,12 +5823,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1504004236}
         m_TargetAssemblyTypeName: Bet, Assembly-CSharp
-        m_MethodName: Bet1
-        m_Mode: 1
+        m_MethodName: ToBet
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0

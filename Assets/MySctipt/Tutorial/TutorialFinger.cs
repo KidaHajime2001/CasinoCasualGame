@@ -5,11 +5,14 @@ using UnityEngine;
 
 public class TutorialFinger : MonoBehaviour
 {
-    [SerializeField] List<Vector3> locations;
-    [SerializeField] int step = 0;
+    [SerializeField] Vector3 startPos;
+    [SerializeField] Vector3 aimPos;
     [SerializeField] bool isMoving = false;
     [SerializeField] float speed;
+    [SerializeField] bool isBack = false;
 
+    List<Vector3> locations;
+    int step = 0;
     float deltaTimeCounter = 0.0f;
 
     void Start()
@@ -30,8 +33,19 @@ public class TutorialFinger : MonoBehaviour
     {
         this.deltaTimeCounter += Time.deltaTime;
 
+        if(this.isBack)
+        {
+            this.startPos = this.locations[this.step + 1];
+            this.aimPos = this.locations[this.step];
+        }
+        else
+        {
+            this.startPos = this.locations[this.step - 1];
+            this.aimPos = this.locations[this.step];
+        }
+
         // 現在の場所から移動
-        this.transform.position = Vector3.Lerp(this.locations[this.step - 1], this.locations[this.step], this.deltaTimeCounter * this.speed);
+        this.transform.position = Vector3.Lerp(startPos, aimPos, this.deltaTimeCounter * this.speed);
 
         // 移動が完了したら、移動完了状態にする。
         if(Vector3.Distance(this.transform.position, this.locations[this.step]) <= 0.5f)
@@ -45,10 +59,6 @@ public class TutorialFinger : MonoBehaviour
     /// </summary>
     public void MoveToNextStep()
     {
-        if(!this.CanProceedToNextStep())
-        {
-            return;
-        }
         // 配列の末尾なら移動不可
         if(this.step == this.locations.Count - 1)
         {
@@ -56,16 +66,19 @@ public class TutorialFinger : MonoBehaviour
         }
         // 次のステップに進める
         ++this.step;
+        // 次に進むようにして
+        this.isBack = false;
         // 移動状態にする。
         this.isMoving = true;
+        // デルタタイムをリセット
+        this.deltaTimeCounter = 0.0f;
     }
 
+    /// <summary>
+    /// 前の場所へ移動する指示を出す。
+    /// </summary>
     public void MoveToPreviousStep()
     {
-        if(!this.CanProceedToNextStep())
-        {
-            return;
-        }
         // 配列の先頭なら移動不可
         if (this.step == 0)
         {
@@ -73,22 +86,12 @@ public class TutorialFinger : MonoBehaviour
         }
         // 前のステップに戻る
         --this.step;
+        // 前に戻るようにして
+        this.isBack = true;
         // 移動状態にする
         this.isMoving = true;
-    }
-
-    /// <summary>
-    /// 次の段階に進めていいか？前の段階に戻っていいか？共通のチェック
-    /// </summary>
-    bool CanProceedToNextStep()
-    {
-        // 移動中なら更新不可
-        if(this.isMoving)
-        {
-            return false;
-        }
-
-        return true;
+        // デルタタイムをリセット
+        this.deltaTimeCounter = 0.0f;
     }
 
     public void SetLocations(List<Vector3> _locations)

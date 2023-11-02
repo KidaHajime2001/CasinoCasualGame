@@ -79,33 +79,16 @@ public class Bet : MonoBehaviour
         nowChipPosL = chipImgPosLSecond.transform.position;
         nowChipPosR = chipImgPosRSecond.transform.position;
     }
-    public void Bet1()
-    {
-        
-        betNum += 1;
-        if (betMax <= betNum)
-        {
-            betNum = betMax;
-        }
-    }
-    public void Bet10()
-    {
-        betNum += 10;
 
-        if (betMax <= betNum)
-        {
-            betNum = betMax;
-        }
-    }
-    public void Bet100()
+    public void ToBet(int _value)
     {
-        betNum += 100;
-
+        betNum += _value;
         if (betMax <= betNum)
         {
             betNum = betMax;
         }
     }
+
     public void ResetRimmit()
     {
         betMax = chipGenerator.GetChipNum();

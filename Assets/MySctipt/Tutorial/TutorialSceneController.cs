@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 
 public class TutorialSceneController : MonoBehaviour
 {
@@ -20,35 +22,49 @@ public class TutorialSceneController : MonoBehaviour
 
         // 共通
         ShowingResult,
-        Ending,
+        Ending
     }
-    TutorialProgress progress;
+    [SerializeField] TutorialProgress progress;
     GameStageProgress normalProgress;   // 通常のゲームで使う進捗(カメラの向きのために使用)
+    //public enum BetState
+    //{
+    //    Right,
+    //    Left,
+    //    Non
+    //}
+    //public struct DealWave
+    //{
+    //    public PlayCardDeal dealL;
+    //    public PlayCardDeal dealR;
+    //}
+    //Dictionary<BetState, PlayCardDeal> BP;
+    //[SerializeField] List<DealWave> dealWave;
 
-    bool isTutorial = true;
-    bool hasWalked = false;
+    // キャラクターの移動
     float deltaTimeCounter = 0.0f;
+    bool hasWalked = false;
     Vector3 nowPos;
     Vector3 aimPos;
-    Vector3 fingerAimPos;
-    [SerializeField]int pressedButtonCount = 0;
+
+    [SerializeField] GameObject player;
+    [SerializeField] float walkSpeed;
+
+    // チュートリアルの進行
+    bool isTutorial = true;
+    int pressedButtonCount = 0;
     List<Vector3> selectButtonLocations;
     List<Vector3> betButtonLocations;
     int fingerStepCount = 0;
 
-    [SerializeField] GameObject player;
-    [SerializeField] float walkSpeed;
     [SerializeField] List<GameObject> eventLocations;
     [SerializeField] CameraControl camControl;
     [SerializeField] List<Button> selectButtons;
     [SerializeField] List<Button> betButtons;
-    [SerializeField] GameObject finger;
-    [SerializeField] float fingerSpeed;
-
-    [SerializeField] TutorialFinger tutoFinger;
+    [SerializeField] TutorialFinger finger;
+    [SerializeField] CountDownTimer countDownTimer;
+    [SerializeField] Bet bet;
 
     int currentLocation = 0;
-
 
     // Start is called before the first frame update
     void Start()
@@ -69,7 +85,7 @@ public class TutorialSceneController : MonoBehaviour
             this.betButtons[i].interactable = false;
         }
         // 指を非表示
-        finger.SetActive(false);
+        finger.gameObject.SetActive(false);
 
         // ボタンの座標を配列に記録
         for (int i = 0; i < this.selectButtons.Count; ++i)
@@ -81,7 +97,9 @@ public class TutorialSceneController : MonoBehaviour
             this.betButtonLocations.Add(betButtons[i].transform.position);
         }
 
-        // 初期コイン枚数111枚
+        //BP = new Dictionary<BetState, PlayCardDeal>();
+
+        // 初期コイン枚数の設定(111枚)
 
         this.ToNextProgress();
     }
@@ -111,11 +129,11 @@ public class TutorialSceneController : MonoBehaviour
                         this.progress = TutorialProgress.Selecting;
                         this.normalProgress = GameStageProgress.Thinking;
 
-                        this.finger.SetActive(true);
+                        this.finger.gameObject.SetActive(true);
                         this.deltaTimeCounter = 0.0f;
 
                         // 指の移動情報を渡す
-                        this.tutoFinger.SetLocations(this.selectButtonLocations);
+                        this.finger.SetLocations(this.selectButtonLocations);
                     }
                     else
                     {
@@ -129,21 +147,25 @@ public class TutorialSceneController : MonoBehaviour
 
             case TutorialProgress.Selecting:
                 // ■Game1
+
+                // 左右の選択ボタンと左右のゲーム以外を暗くする。
+                // 左右どちらを選択しているかわかりやすくする。
+
                 // 移動中でなければ
-                if(!this.tutoFinger.IsMoving())
+                if(!this.finger.IsMoving())
                 {
                     switch (this.fingerStepCount)
                     {
                         case 0:
                             // 段階を1増やして移動させる
                             ++this.fingerStepCount;
-                            this.tutoFinger.MoveToNextStep();
+                            this.finger.MoveToNextStep();
                             break;
 
                         case 1:
                             // 段階を1増やして移動させる
                             ++this.fingerStepCount;
-                            this.tutoFinger.MoveToPreviousStep();
+                            this.finger.MoveToPreviousStep();
                             break;
 
                         case 2:
@@ -151,14 +173,12 @@ public class TutorialSceneController : MonoBehaviour
                             this.selectButtons[0].interactable = true;
                             if (this.pressedButtonCount == 1)
                             {
-                                await Task.Delay(1000);
                                 // 左ボタンを押せなくする
                                 this.selectButtons[0].interactable = false;
                                 // 指の移動情報を渡す
-                                this.tutoFinger.SetLocations(this.betButtonLocations);
+                                this.finger.SetLocations(this.betButtonLocations);
                                 this.progress = TutorialProgress.Betting;
                                 // 使用した変数の初期化
-                                this.deltaTimeCounter = 0.0f;
                                 this.fingerStepCount = 0;
                                 this.pressedButtonCount = 0;
                             }
@@ -169,24 +189,48 @@ public class TutorialSceneController : MonoBehaviour
 
             case TutorialProgress.Betting:
 
+                // ベットボタンと賭けてる額、残りのコイン数の部分以外を暗くする。
+
                 // 移動中でなければ
-                if (!this.tutoFinger.IsMoving())
+                if (!this.finger.IsMoving())
                 {
                     switch (this.fingerStepCount)
                     {
+                        // 0~3で2回進んで2回戻る
                         case 0:
+                            ++this.fingerStepCount;
+                            this.finger.MoveToNextStep();
+                            break;
+
+                        case 1:
+                            ++this.fingerStepCount;
+                            this.finger.MoveToNextStep();
+                            break;
+
+                        case 2:
+                            ++this.fingerStepCount;
+                            this.finger.MoveToPreviousStep();
+                            break;
+
+                        case 3:
+                            ++this.fingerStepCount;
+                            this.finger.MoveToPreviousStep();
+                            break;
+
+                        case 4:
                             // bet1を押せるようにして、ボタンが押されたら次にすすむ
                             this.betButtons[0].interactable = true;
-                            if(this.pressedButtonCount == 1)
+                            if (this.pressedButtonCount == 1)
                             {
                                 ++this.fingerStepCount;
                                 // bet1を押せなくする
                                 this.betButtons[0].interactable = false;
                                 // 指の移動情報を渡す
-                                this.tutoFinger.MoveToNextStep();
+                                this.finger.MoveToNextStep();
                             }
                             break;
-                        case 1:
+
+                        case 5:
                             // bet10を押せるようにして、ボタンが押されたら次にすすむ
                             this.betButtons[1].interactable = true;
                             if (this.pressedButtonCount == 2)
@@ -195,10 +239,11 @@ public class TutorialSceneController : MonoBehaviour
                                 // bet1を押せなくする
                                 this.betButtons[1].interactable = false;
                                 // 指の移動情報を渡す
-                                this.tutoFinger.MoveToNextStep();
+                                this.finger.MoveToNextStep();
                             }
                             break;
-                        case 2:
+
+                        case 6:
                             // bet100を押せるようにして、ボタンが押されたら次にすすむ
                             this.betButtons[2].interactable = true;
                             if (this.pressedButtonCount == 3)
@@ -207,38 +252,40 @@ public class TutorialSceneController : MonoBehaviour
                                 // bet1を押せなくする
                                 this.betButtons[2].interactable = false;
                                 // 指の移動情報を渡す
-                                this.tutoFinger.MoveToNextStep();
+                                this.finger.MoveToNextStep();
+
                             }
                             break;
-                    }
-                }
 
-                // 次にベットするボタンを有効にする
-                for (int i = 0; i < this.betButtons.Count; ++i)
-                {
-                    if(this.betButtons[i].interactable == true)
-                    {
-                        // 有効なボタンが末尾の場合は終了
-                        if (i == this.betButtons.Count - 1)
-                        {
+                        case 7:
+                            // 指を非表示
+                            this.finger.gameObject.SetActive(false);
+                            // 使用した変数の初期化
+                            this.fingerStepCount = 0;
+                            this.pressedButtonCount = 0;
+
+                            // カウントダウンの設定
+                            this.progress = TutorialProgress.CountingDown;
+                            this.countDownTimer.SetTimer(5.0f);
                             break;
-                        }
-                        else
-                        {
-                            this.betButtons[i].interactable = false;
-                            this.betButtons[i+1].interactable = true;
-                        }
                     }
                 }
-                
-                
-                // 1, 10, 100 それぞれボタンを押させ、111枚賭けさせる
-
 
                 break;
 
             case TutorialProgress.CountingDown:
                 // カウントダウンを見せる
+
+                // カウントダウンが終了したら
+                if (!this.countDownTimer.IsCountingDown())
+                {
+                    this.countDownTimer.InitDisplay();
+                    //進行度を結果発表に移す
+                    this.progress = TutorialProgress.ShowingResult;
+                    normalProgress = GameStageProgress.Result;
+                    //勝敗をチェックする
+                    // CheckResult();
+                }
 
                 break;
 
@@ -247,7 +294,34 @@ public class TutorialSceneController : MonoBehaviour
                 break;
 
             case TutorialProgress.ShowingResult:
-                // 結果を見せる(プラスになる)
+                ////ゲームクリアフラグが立っていたら
+                //if (GameClear && BP[BetState.R].GetReverseComplete() && BP[BetState.L].GetReverseComplete())
+                //{
+                //    countup += Time.deltaTime;
+                //    if (countup >= timeLimit)
+                //    {
+                //        countup = 0;
+                //        Debug.Log("WAVE:" + nowWave);
+                //        UpdateDIC();
+                //        //カメラを移動用に変更する
+                //        cameraControl.SetFar();
+
+                //        //エフェクトを起動
+                //        effect[eCount].StartClearEffect();
+                //        eCount++;
+                //        //ゲームクリアのフラグを折る
+                //        GameClear = false;
+                //        //チップをセット
+                //        chipGenerator.SetChip((bet.GetBetNum() * (int)magnitude) + clearPulus);
+                //        bet.ResetRimmit();
+                //        //演出用の時間を確保
+                //        await Task.Delay(3000);
+                //        //次の位置へ
+                //        NextPosition();
+
+                //    }
+
+                //}
 
                 break;
 
@@ -292,4 +366,30 @@ public class TutorialSceneController : MonoBehaviour
     {
         ++this.pressedButtonCount;
     }
+
+    //void CheckResult()
+    //{
+    //    if (bet.GetBetState() == BetState.Left)
+    //    {
+    //        InitClearData(bet.GetBetState());
+
+    //    }
+    //    else if (bet.GetBetState() == BetState.Right)
+    //    {
+    //        InitClearData(bet.GetBetState());
+    //    }
+
+    //    //BP[BetState.R].ReverseCard();
+    //    //BP[BetState.L].ReverseCard();
+    //    //Debug.Log("Bet:" + bet.GetBetState() + "R/L:" + BP[BetState.R].GetResult() + "/" + BP[BetState.L].GetResult() + "/nowwave:" + nowWave);
+    //}
+
+    //void InitClearData(BetState _state)
+    //{
+    //    clearPulus = BP[_state].GetPulus();
+    //    magnitude = BP[_state].GetMagnitude();
+
+    //    bet.ResetBetState();
+
+    //}
 }

@@ -7144,6 +7144,7 @@ GameObject:
   - component: {fileID: 1191142337}
   - component: {fileID: 1191142339}
   - component: {fileID: 1191142338}
+  - component: {fileID: 1191142340}
   m_Layer: 5
   m_Name: Finger
   m_TagString: Untagged
@@ -7184,14 +7185,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 23cda8498671cf34db5088aa91dece61, type: 3}
+  m_Sprite: {fileID: 21300000, guid: daaa688b8fc855d4095387b52d29691e, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7209,6 +7210,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1191142336}
   m_CullTransparentMesh: 1
+--- !u!114 &1191142340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1191142336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ceba4d3d38e3ca49b2c939b94a3e9de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  locations: []
+  step: 0
+  isMoving: 0
+  speed: 0
 --- !u!1 &1192650423
 GameObject:
   m_ObjectHideFlags: 0
@@ -10102,13 +10119,13 @@ MonoBehaviour:
   camControl: {fileID: 237187845}
   leftButton: {fileID: 2071536524}
   rightButton: {fileID: 753462119}
-  bet1: {fileID: 1114665570}
-  bet10: {fileID: 932544576}
-  bet100: {fileID: 1377073834}
+  betButtons:
+  - {fileID: 1114665572}
+  - {fileID: 932544578}
+  - {fileID: 1377073836}
   finger: {fileID: 1191142336}
   fingerSpeed: 0.6
-  fingerMagnification: 1.5
-  fingerScalingSpeed: 0
+  tutoFinger: {fileID: 1191142340}
 --- !u!1 &1825623933
 GameObject:
   m_ObjectHideFlags: 0
@@ -10402,15 +10419,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7736790154115379491, guid: 4cd66c59f0201a546b05b20f4b803dbf, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.00000047683716
+      value: 0.00000027840514
       objectReference: {fileID: 0}
     - target: {fileID: 7736790154115379491, guid: 4cd66c59f0201a546b05b20f4b803dbf, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.499998
+      value: 3.0701134
       objectReference: {fileID: 0}
     - target: {fileID: 7736790154115379491, guid: 4cd66c59f0201a546b05b20f4b803dbf, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -11.170004
+      value: -22.776207
       objectReference: {fileID: 0}
     - target: {fileID: 7736790154115379491, guid: 4cd66c59f0201a546b05b20f4b803dbf, type: 3}
       propertyPath: m_LocalRotation.w

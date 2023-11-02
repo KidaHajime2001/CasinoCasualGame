@@ -33,6 +33,7 @@ public class TutorialSceneController : MonoBehaviour
     Vector3 fingerAimPos;
     bool fingerRoundTripFlag = false;
     bool pressedLeftButton = false;
+    List<Vector3> betButtonLocations;
 
     [SerializeField] GameObject player;
     [SerializeField] float walkSpeed;
@@ -40,13 +41,12 @@ public class TutorialSceneController : MonoBehaviour
     [SerializeField] CameraControl camControl;
     [SerializeField] Button leftButton;
     [SerializeField] Button rightButton;
-    [SerializeField] GameObject bet1;
-    [SerializeField] GameObject bet10;
-    [SerializeField] GameObject bet100;
+    //[SerializeField] List<Button> selectButtons;
+    [SerializeField] List<Button> betButtons;
     [SerializeField] GameObject finger;
     [SerializeField] float fingerSpeed;
-    [SerializeField] float fingerMagnification;
-    [SerializeField] float fingerScalingSpeed;
+
+    [SerializeField] TutorialFinger tutoFinger;
 
     int currentLocation = 0;
 
@@ -54,15 +54,27 @@ public class TutorialSceneController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        this.betButtonLocations = new List<Vector3>();
+
         // プレイヤーの位置を開始位置に設定
         player.transform.position = eventLocations[0].transform.position;
         // 左右の選択ボタンを無効化
         leftButton.interactable = false;
         rightButton.interactable = false;
+        // ベット用のボタンを無効化
+        for(int i = 0; i < this.betButtons.Count; ++i)
+        {
+            this.betButtons[i].interactable = false;
+        }
         // 指を非表示
         finger.SetActive(false);
         finger.transform.position = leftButton.transform.position;
         
+        for(int i = 0; i < betButtons.Count; ++i) 
+        {
+            betButtonLocations.Add(betButtons[i].transform.position);
+        }
+
         // 初期コイン枚数111枚
 
         this.ToNextProgress();
@@ -162,9 +174,30 @@ public class TutorialSceneController : MonoBehaviour
                 break;
 
             case TutorialProgress.Betting:
+
+                // チュートリアル用の指に移動する
+                this.tutoFinger.SetLocations(this.betButtonLocations);
+                // 次にベットするボタンを有効にする
+                for(int i = 0; i < this.betButtons.Count; ++i)
+                {
+                    if(this.betButtons[i].interactable == true)
+                    {
+                        // 有効なボタンが末尾の場合は終了
+                        if (i == this.betButtons.Count - 1)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            this.betButtons[i].interactable = false;
+                            this.betButtons[i+1].interactable = true;
+                        }
+                    }
+                }
+                
+                
                 // 1, 10, 100 それぞれボタンを押させ、111枚賭けさせる
-                // 1の位置に指を移動
-                this.finger.transform.position = this.bet1.transform.position;
+
 
                 break;
 

@@ -26,19 +26,13 @@ public class TutorialSceneController : MonoBehaviour
     }
     [SerializeField] TutorialProgress progress;
     GameStageProgress normalProgress;   // 通常のゲームで使う進捗(カメラの向きのために使用)
-    //public enum BetState
-    //{
-    //    Right,
-    //    Left,
-    //    Non
-    //}
-    //public struct DealWave
-    //{
-    //    public PlayCardDeal dealL;
-    //    public PlayCardDeal dealR;
-    //}
-    //Dictionary<BetState, PlayCardDeal> BP;
-    //[SerializeField] List<DealWave> dealWave;
+    public struct DealWave
+    {
+        public PlayCardDeal dealL;
+        public PlayCardDeal dealR;
+    }
+    Dictionary<BetState, PlayCardDeal> BP;
+    [SerializeField] List<DealWave> dealWave;
 
     // キャラクターの移動
     float deltaTimeCounter = 0.0f;
@@ -56,6 +50,12 @@ public class TutorialSceneController : MonoBehaviour
     List<Vector3> betButtonLocations;
     int fingerStepCount = 0;
 
+    int clearPulus = 0;
+    float magnitude = 0;
+    bool isGameClear = false;
+    int qWave = 0;
+    int eCount = 0;
+
     [SerializeField] List<GameObject> eventLocations;
     [SerializeField] CameraControl camControl;
     [SerializeField] List<Button> selectButtons;
@@ -63,6 +63,9 @@ public class TutorialSceneController : MonoBehaviour
     [SerializeField] TutorialFinger finger;
     [SerializeField] CountDownTimer countDownTimer;
     [SerializeField] Bet bet;
+    [SerializeField] List<ClearEffect> effect;
+    [SerializeField] ChipGenerator chipGenerator;
+    [SerializeField] Result result;
 
     int currentLocation = 0;
 
@@ -97,7 +100,7 @@ public class TutorialSceneController : MonoBehaviour
             this.betButtonLocations.Add(betButtons[i].transform.position);
         }
 
-        //BP = new Dictionary<BetState, PlayCardDeal>();
+        BP = new Dictionary<BetState, PlayCardDeal>();
 
         // 初期コイン枚数の設定(111枚)
 
@@ -124,8 +127,11 @@ public class TutorialSceneController : MonoBehaviour
                 if (Vector3.Distance(this.player.transform.position, this.aimPos) <= 0.5f)
                 {
                     // 進捗を次に移す
+                    // チュートリアル用
                     if (isTutorial)
                     {
+                        this.isTutorial = false;
+
                         this.progress = TutorialProgress.Selecting;
                         this.normalProgress = GameStageProgress.Thinking;
 
@@ -135,8 +141,23 @@ public class TutorialSceneController : MonoBehaviour
                         // 指の移動情報を渡す
                         this.finger.SetLocations(this.selectButtonLocations);
                     }
+                    // 通常用
                     else
                     {
+                        // 左右の選択ボタンを無効化
+                        for (int i = 0; i < this.selectButtons.Count; ++i)
+                        {
+                            this.selectButtons[i].interactable = true;
+                        }
+                        // ベット用のボタンを無効化
+                        for (int i = 0; i < this.betButtons.Count; ++i)
+                        {
+                            this.betButtons[i].interactable = true;
+                        }
+
+                        // 時間制限を追加
+                        this.countDownTimer.SetTimer(30.0f);
+
                         this.progress = TutorialProgress.Thinking;
                         this.normalProgress = GameStageProgress.Thinking;
                     }
@@ -283,64 +304,86 @@ public class TutorialSceneController : MonoBehaviour
                     //進行度を結果発表に移す
                     this.progress = TutorialProgress.ShowingResult;
                     normalProgress = GameStageProgress.Result;
-                    //勝敗をチェックする
-                    // CheckResult();
+
+                    // リザルトの表示が上手くいかないため、スキップするために書いてある
+                    this.ToNextProgress();
+                    
+                    // 勝敗をチェックする
+                    CheckResult();
                 }
 
                 break;
 
             case TutorialProgress.Thinking:
+                // もし時間制限に達したら
+                if(!this.countDownTimer.IsCountingDown())
+                {
+                    // 進捗を結果発表に移す
+                    this.progress = TutorialProgress.ShowingResult;
+                    normalProgress = GameStageProgress.Result;
+
+                    // リザルトの表示が上手くいかないため、スキップするために書いてある
+                    this.ToNextProgress();
+
+                    // 勝敗をチェックする
+                    CheckResult();
+                }
+
 
                 break;
 
             case TutorialProgress.ShowingResult:
-                ////ゲームクリアフラグが立っていたら
-                //if (GameClear && BP[BetState.R].GetReverseComplete() && BP[BetState.L].GetReverseComplete())
-                //{
-                //    countup += Time.deltaTime;
-                //    if (countup >= timeLimit)
-                //    {
-                //        countup = 0;
-                //        Debug.Log("WAVE:" + nowWave);
-                //        UpdateDIC();
-                //        //カメラを移動用に変更する
-                //        cameraControl.SetFar();
+                //ゲームクリアフラグが立っていたら
+                if (this.isGameClear && this.BP[BetState.R].GetReverseComplete() && this.BP[BetState.L].GetReverseComplete())
+                {
+                    this.deltaTimeCounter += Time.deltaTime;
+                    if (this.deltaTimeCounter >= 3.0f)
+                    {
+                        this.deltaTimeCounter = 0.0f;
 
-                //        //エフェクトを起動
-                //        effect[eCount].StartClearEffect();
-                //        eCount++;
-                //        //ゲームクリアのフラグを折る
-                //        GameClear = false;
-                //        //チップをセット
-                //        chipGenerator.SetChip((bet.GetBetNum() * (int)magnitude) + clearPulus);
-                //        bet.ResetRimmit();
-                //        //演出用の時間を確保
-                //        await Task.Delay(3000);
-                //        //次の位置へ
-                //        NextPosition();
+                        UpdateDIC();
+                        //カメラを移動用に変更する
+                        camControl.SetFar();
 
-                //    }
+                        //エフェクトを起動
+                        effect[eCount].StartClearEffect();
+                        eCount++;
+                        //ゲームクリアのフラグを折る
+                        isGameClear = false;
+                        //チップをセット
+                        chipGenerator.SetChip((bet.GetBetNum() * (int)magnitude) + clearPulus);
+                        bet.ResetRimmit();
+                        //演出用の時間を確保
+                        await Task.Delay(3000);
+                        //次の位置へ
+                        this.ToNextProgress();
+                    }
 
-                //}
+                }
 
                 break;
 
             case TutorialProgress.Ending:
-
-                break;
+                // 移動目標を設定
+                this.aimPos = this.eventLocations[this.currentLocation].transform.position;
+                this.deltaTimeCounter += Time.deltaTime;
+                // 移動処理
+                this.player.transform.position = Vector3.Lerp(this.nowPos, this.aimPos, this.deltaTimeCounter * this.walkSpeed);
+                // 移動が完了した場合
+                if (Vector3.Distance(this.player.transform.position, this.aimPos) <= 0.5f)
+                {
+                    this.deltaTimeCounter += Time.deltaTime;
+                    if(this.deltaTimeCounter >= 3.0f)
+                    {
+                        // ステージリザルト
+                        result.SetFlag(this.chipGenerator.GetChipNum());
+                    }
+                }
+                    break;
         }
 
         // カメラに進捗を設定
         camControl.SetProgress(normalProgress);
-
-
-        // ■Game2フェーズ
-        // 自由に選択
-        // 自由にベット
-        // カウントダウン
-        // 結果を見せる(プラスもマイナスも有る)
-
-        // ■リザルト
     }
 
     /// <summary>
@@ -367,29 +410,39 @@ public class TutorialSceneController : MonoBehaviour
         ++this.pressedButtonCount;
     }
 
-    //void CheckResult()
-    //{
-    //    if (bet.GetBetState() == BetState.Left)
-    //    {
-    //        InitClearData(bet.GetBetState());
+    void CheckResult()
+    {
+        if (this.bet.GetBetState() != BetState.N)
+        {
+            this.InitClearData(this.bet.GetBetState());
+        }
 
-    //    }
-    //    else if (bet.GetBetState() == BetState.Right)
-    //    {
-    //        InitClearData(bet.GetBetState());
-    //    }
+        this.BP[BetState.R].ReverseCard();
+        this.BP[BetState.L].ReverseCard();
+        Debug.Log("Bet:" + this.bet.GetBetState() + "R/L:" + this.BP[BetState.R].GetResult() + "/" + this.BP[BetState.L].GetResult() + "/nowwave:" + 0);
 
-    //    //BP[BetState.R].ReverseCard();
-    //    //BP[BetState.L].ReverseCard();
-    //    //Debug.Log("Bet:" + bet.GetBetState() + "R/L:" + BP[BetState.R].GetResult() + "/" + BP[BetState.L].GetResult() + "/nowwave:" + nowWave);
-    //}
+        ++qWave;
+    }
 
-    //void InitClearData(BetState _state)
-    //{
-    //    clearPulus = BP[_state].GetPulus();
-    //    magnitude = BP[_state].GetMagnitude();
+    void InitClearData(BetState _state)
+    {
+        this.isGameClear = true;
 
-    //    bet.ResetBetState();
+        this.clearPulus = BP[_state].GetPulus();
+        this.magnitude = BP[_state].GetMagnitude();
 
-    //}
+        this.bet.ResetBetState();
+
+    }
+
+    void UpdateDIC()
+    {
+        Debug.Log("Qwall2R" + qWave);
+        if (qWave >= dealWave.Count)
+        {
+            return;
+        }
+        BP[BetState.R] = dealWave[qWave].dealR;
+        BP[BetState.L] = dealWave[qWave].dealL;
+    }
 }

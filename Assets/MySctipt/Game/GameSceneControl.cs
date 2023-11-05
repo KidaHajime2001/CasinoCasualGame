@@ -215,15 +215,11 @@ public class GameSceneControl : MonoBehaviour
     }
     void CheckResult()
     {
-        if(bet.GetBetState() == BetState.L)
+        if(bet.GetBetState() != BetState.N)
         {
             InitClearData(bet.GetBetState());
+        }
 
-        }
-        else if(bet.GetBetState() == BetState.R)
-        {
-            InitClearData(bet.GetBetState());
-        }
         BP[BetState.R].ReverseCard();
         BP[BetState.L].ReverseCard();
         Debug.Log("Bet:"+bet.GetBetState()+"R/L:"+BP[BetState.R].GetResult()+"/"+ BP[BetState.L].GetResult() + "/nowwave:"+nowWave);

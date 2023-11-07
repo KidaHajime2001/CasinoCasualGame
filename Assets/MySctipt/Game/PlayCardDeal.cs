@@ -40,7 +40,7 @@ public class PlayCardDeal : MonoBehaviour
         campPosDic[CardCamp.Neutral]=adventPositionNeutral.transform.position;
 
 
-        gameDataManager = this.AddComponent<GameDataManager>();
+        gameDataManager = this.GetComponent<GameDataManager>();
         gameData = gameDataManager.LoadGameData( gameDataManager.GetDataPath(firstStageFile));
         
         foreach(CardCamp _camp in Enum.GetValues(typeof(CardCamp)))

@@ -16,6 +16,8 @@ public class GameDataManager : MonoBehaviour
     public GameObject inputFieldObj;
     TMP_InputField inputField;
 
+    [SerializeField] TextMeshProUGUI debugText;
+
     // ファイルパス
     private string _dataPath;
     private string _InputPath;
@@ -28,7 +30,7 @@ public class GameDataManager : MonoBehaviour
         
         _dataPath = Application.persistentDataPath + "/GameWaveData1.json";
 
-        gameData = LoadGameData(_dataPath);
+        //gameData = LoadGameData(_dataPath);
         //Debug.Log(Data);
     }
     public void InputText()
@@ -60,6 +62,9 @@ public class GameDataManager : MonoBehaviour
     {
         Debug.Log("Loading..."+dataPath);
 
+        // デバッグ用 この関数が行われたことを示す
+        this.debugText.text += "LoadGameData() : ";
+
         if (!File.Exists(dataPath))
         {
             Debug.Log("ファイルが見当たりませんでした");
@@ -70,9 +75,15 @@ public class GameDataManager : MonoBehaviour
             writer.Flush();//バッファをクリアする
             writer.Close();//ファイルをクローズする
             Debug.Log(data);
+
+            // デバッグ用 この関数が失敗したことを示す
+            this.debugText.text += "失敗\n";
         }
         // JSONデータとしてデータを読み込む
         var json = File.ReadAllText(dataPath);
+
+        // デバッグ用 この関数が成功したことを示す。データを確認するために、pulusChipの値を表示させる
+        this.debugText.text += JsonConvert.DeserializeObject<GameData>(json).pulusChip.ToString() + "\n";
 
         //return JsonUtility.FromJson<List<GameWave>>(json);
         return JsonConvert.DeserializeObject<GameData>(json);

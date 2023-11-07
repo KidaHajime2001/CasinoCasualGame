@@ -155,7 +155,7 @@ public class TutorialSceneController : MonoBehaviour
                         }
 
                         // éûä‘êßå¿Çí«â¡
-                        this.countDownTimer.SetTimer(30.0f);
+                        this.countDownTimer.SetTimer(10.0f);
 
                         this.progress = TutorialProgress.Thinking;
                         this.normalProgress = GameStageProgress.Thinking;

@@ -247,6 +247,5 @@ public class GameSceneControl : MonoBehaviour
         }
         BP[BetState.R] =dealWave[qWave].dealR;
         BP[BetState.L] = dealWave[qWave].dealL;
-
     }
 }

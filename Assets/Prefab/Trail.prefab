@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2788370155357666986}
   - component: {fileID: 2788370155357666987}
   m_Layer: 0
-  m_Name: Cube (4)
+  m_Name: Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -117,8 +117,9 @@ GameObject:
   - component: {fileID: 2788370157033319075}
   - component: {fileID: 2788370157033319072}
   - component: {fileID: 2788370157033319073}
+  - component: {fileID: -8634893185962590407}
   m_Layer: 0
-  m_Name: Cube (4)
+  m_Name: Trail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -132,14 +133,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2788370157033319078}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -17.105211, y: -16.601994, z: 5.3350306}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 20, y: 20, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2788370157076505730}
   - {fileID: 2788370155357666984}
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!33 &2788370157033319075
 MeshFilter:
@@ -212,6 +213,24 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-8634893185962590407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2788370157033319078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 239e13f282db04047a5b6a60ab3c8f47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: {x: 0, y: 0, z: -8}
+  lifetime: 12
+  maxHeight: 1
+  aimHeight: 0
+  timeToPeak: 0.4
+  timeToAim: 0.7
 --- !u!1 &2788370157076505731
 GameObject:
   m_ObjectHideFlags: 0
@@ -224,8 +243,8 @@ GameObject:
   - component: {fileID: 2788370157076505791}
   - component: {fileID: 2788370157076505788}
   - component: {fileID: 2788370157076505789}
-  m_Layer: 0
-  m_Name: Cube (3)
+  m_Layer: 6
+  m_Name: Left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

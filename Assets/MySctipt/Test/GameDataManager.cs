@@ -60,30 +60,36 @@ public class GameDataManager : MonoBehaviour
 
     public GameData LoadGameData(string dataPath)
     {
-        Debug.Log("Loading..."+dataPath);
-
-        // デバッグ用 この関数が行われたことを示す
-        this.debugText.text += "LoadGameData() : ";
-
-        if (!File.Exists(dataPath))
+        UnityEngine.Networking.UnityWebRequest www = UnityEngine.Networking.UnityWebRequest.Get(dataPath);
+        www.SendWebRequest();
+        while (!www.isDone)
         {
-            Debug.Log("ファイルが見当たりませんでした");
-            GameData data = new GameData();
-            string jsonstr = JsonConvert.SerializeObject(data);//受け取ったPlayerDataをJSONに変換
-            StreamWriter writer = new StreamWriter(dataPath, false);//初めに指定したデータの保存先を開く
-            writer.WriteLine(jsonstr);//JSONデータを書き込み
-            writer.Flush();//バッファをクリアする
-            writer.Close();//ファイルをクローズする
-            Debug.Log(data);
-
-            // デバッグ用 この関数が失敗したことを示す
-            this.debugText.text += "失敗\n";
         }
-        // JSONデータとしてデータを読み込む
-        var json = File.ReadAllText(dataPath);
+        //return www.downloadHandler.text;
+        //Debug.Log("Loading..."+dataPath);
 
+        ////// デバッグ用 この関数が行われたことを示す
+        ////this.debugText.text += "LoadGameData() : ";
+
+        //if (!File.Exists(dataPath))
+        //{
+        //    Debug.Log("ファイルが見当たりませんでした");
+        //    GameData data = new GameData();
+        //    string jsonstr = JsonConvert.SerializeObject(data);//受け取ったPlayerDataをJSONに変換
+        //    StreamWriter writer = new StreamWriter(dataPath, false);//初めに指定したデータの保存先を開く
+        //    writer.WriteLine(jsonstr);//JSONデータを書き込み
+        //    writer.Flush();//バッファをクリアする
+        //    writer.Close();//ファイルをクローズする
+        //    Debug.Log(data);
+
+        //    // デバッグ用 この関数が失敗したことを示す
+        //    this.debugText.text += "失敗\n";
+        //}
+        // JSONデータとしてデータを読み込む
+        // var json = File.ReadAllText(dataPath);
+        var json = www.downloadHandler.text;
         // デバッグ用 この関数が成功したことを示す。データを確認するために、pulusChipの値を表示させる
-        this.debugText.text += JsonConvert.DeserializeObject<GameData>(json).pulusChip.ToString() + "\n";
+        //this.debugText.text += JsonConvert.DeserializeObject<GameData>(json).pulusChip.ToString() + "\n";
 
         //return JsonUtility.FromJson<List<GameWave>>(json);
         return JsonConvert.DeserializeObject<GameData>(json);
@@ -91,7 +97,18 @@ public class GameDataManager : MonoBehaviour
     }
     public string GetDataPath(string _fileName)
     {
-        return Application.streamingAssetsPath+"/"+ _fileName + ".json";
+        _fileName = _fileName  +".json";
+        //Androidの場合
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            _fileName = "jar:file://" + Application.dataPath + "!/assets" + "/" + _fileName;
+        }
+        //Unity Editor、Windows、Linuxプレイヤー、PS4、Xbox One、Switch
+        else
+        {
+            _fileName = Application.streamingAssetsPath + "/" + _fileName;
+        }
+        return _fileName;
     }
 
 

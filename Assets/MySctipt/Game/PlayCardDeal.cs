@@ -33,6 +33,7 @@ public class PlayCardDeal : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log(firstStageFile);
         reverseList = new List<GameObject>();
         campPosDic = new Dictionary<CardCamp, Vector3>();
         campPosDic[CardCamp.Player]=adventPositionPlayer.transform.position;
@@ -40,9 +41,9 @@ public class PlayCardDeal : MonoBehaviour
         campPosDic[CardCamp.Neutral]=adventPositionNeutral.transform.position;
 
 
-        gameDataManager = this.GetComponent<GameDataManager>();
+        gameDataManager = this.AddComponent<GameDataManager>();
         gameData = gameDataManager.LoadGameData( gameDataManager.GetDataPath(firstStageFile));
-        
+       
         foreach(CardCamp _camp in Enum.GetValues(typeof(CardCamp)))
         {
             AdventPokerCard(_camp);

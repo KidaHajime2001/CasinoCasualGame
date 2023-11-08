@@ -6,18 +6,19 @@ using UnityEngine.UI;
 
 public class CountDownTimer : MonoBehaviour
 {
-    float startTime = 0.0f;
-    [SerializeField] float remaining = 0.0f;
-    [SerializeField] bool isCountingDown = false;
     [SerializeField] Image gage;
     [SerializeField] TextMeshProUGUI tmpText;
     [SerializeField] Image progressRing;
 
+    float startTime = 0.0f;
+    float remaining = 0.0f;
+    bool isCountingDown = false;
+
     void Start()
     {
-        this.gage.fillAmount = 1.0f;
         this.tmpText.text = "0";
-        this.progressRing.fillAmount = 1.0f;
+        this.gage.fillAmount = 0.0f;
+        this.progressRing.fillAmount = 0.0f;
     }
 
     // Update is called once per frame
@@ -45,7 +46,6 @@ public class CountDownTimer : MonoBehaviour
         {
             this.remaining = 0.0f;
             this.isCountingDown = false;
-            return;
         }
     }
 
@@ -64,12 +64,5 @@ public class CountDownTimer : MonoBehaviour
     public float GetRemaining()
     {
         return this.remaining;
-    }
-
-    public void InitDisplay()
-    {
-        this.gage.fillAmount = 1.0f;
-        this.tmpText.text = this.startTime.ToString();
-        this.progressRing.fillAmount = 1.0f;
     }
 }

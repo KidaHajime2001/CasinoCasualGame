@@ -302,7 +302,6 @@ public class TutorialSceneController : MonoBehaviour
                 // カウントダウンが終了したら
                 if (!this.countDownTimer.IsCountingDown())
                 {
-                    this.countDownTimer.InitDisplay();
                     //進行度を結果発表に移す
                     this.progress = TutorialProgress.ShowingResult;
                     normalProgress = GameStageProgress.Result;
@@ -433,7 +432,6 @@ public class TutorialSceneController : MonoBehaviour
 
     void UpdateDIC()
     {
-        Debug.Log("Qwall2R" + qWave);
         if (qWave >= dealWave.Count)
         {
             return;

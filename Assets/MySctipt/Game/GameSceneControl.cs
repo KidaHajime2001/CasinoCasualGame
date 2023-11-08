@@ -47,9 +47,9 @@ public class GameSceneControl : MonoBehaviour
 
     [SerializeField]
     private float walkSpeed;
-    
-    [SerializeField] GameObject qTimeUi;
-    ThinkingTime thinkingTime;
+
+    [SerializeField] CountDownTimer countDownTimer;
+    [SerializeField] float thinkingTime;
 
     [SerializeField] Bet bet;
     [SerializeField] List<DealWave> dealWave;
@@ -76,7 +76,6 @@ public class GameSceneControl : MonoBehaviour
        
 
         //制限時間
-        thinkingTime = qTimeUi.GetComponent<ThinkingTime>();
         cameraControl = cameraController.GetComponent<CameraControl>();
         progress = GameStageProgress.Walking;
         nowWave = 0;
@@ -127,14 +126,14 @@ public class GameSceneControl : MonoBehaviour
                     cameraControl.SetMiddle();
 
                     //制限時間のカウント開始
-                    thinkingTime.StartCount();
+                    this.countDownTimer.SetTimer(this.thinkingTime);
                     
                 }
                 break;
 
             case GameStageProgress.Thinking:
                 //もし制限時間に達したら
-                if(thinkingTime.Count())
+                if(!this.countDownTimer.IsCountingDown())
                 {
                     //進行度を結果発表に移す
                     progress=GameStageProgress.Result;

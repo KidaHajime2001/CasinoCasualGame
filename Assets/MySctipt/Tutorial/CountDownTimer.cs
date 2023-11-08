@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,16 +10,20 @@ public class CountDownTimer : MonoBehaviour
     [SerializeField] Image gage;
     [SerializeField] TextMeshProUGUI tmpText;
     [SerializeField] Image progressRing;
+    [SerializeField] TextMeshProUGUI speedMagText;
+    [SerializeField] List<int> speedMags;
 
     float startTime = 0.0f;
     float remaining = 0.0f;
     bool isCountingDown = false;
+    [SerializeField]float speedMag = 1.0f;
 
     void Start()
     {
         this.tmpText.text = "0";
         this.gage.fillAmount = 0.0f;
         this.progressRing.fillAmount = 0.0f;
+        UpdateSpeedMag(1);
     }
 
     // Update is called once per frame
@@ -40,7 +45,7 @@ public class CountDownTimer : MonoBehaviour
     }
     void CountingDown()
     {
-        this.remaining -= Time.deltaTime;
+        this.remaining -= Time.deltaTime * this.speedMag;
         // Ç‡Çµ0.0à»â∫Ç…Ç»Ç¡ÇΩÇÁÅA
         if(this.remaining <= 0.0f)
         {
@@ -54,6 +59,7 @@ public class CountDownTimer : MonoBehaviour
         this.remaining = _second;
         this.startTime = _second;
         this.isCountingDown = true;
+        UpdateSpeedMag(1);
     }
 
     public bool IsCountingDown()
@@ -64,5 +70,33 @@ public class CountDownTimer : MonoBehaviour
     public float GetRemaining()
     {
         return this.remaining;
+    }
+
+    // ë¨ìxî{ó¶É{É^ÉìÇ©ÇÁåƒÇ—èoÇµÅAî{ó¶ÇïœçXÇµÇƒÇ¢Ç≠
+    public void ChangeSpeedMag()
+    {
+        for(int i = 0;i < this.speedMags.Count; ++i)
+        {
+            // åªç›ÇÃî{ó¶Çå©Ç¬ÇØ
+            if(this.speedMag == this.speedMags[i])
+            {
+                // åªç›ÇÃî{ó¶Ç™ññîˆÇ≈Ç»Ç©Ç¡ÇΩÇÁ
+                if (i != this.speedMags.Count - 1)
+                {
+                    UpdateSpeedMag(this.speedMags[i + 1]);
+                }
+                else
+                {
+                    UpdateSpeedMag(this.speedMags[0]);
+                }
+                break;
+            }
+        }
+    }
+
+    void UpdateSpeedMag(int _mag)
+    {
+        this.speedMag = _mag;
+        this.speedMagText.text = "Å~" + this.speedMag.ToString();
     }
 }

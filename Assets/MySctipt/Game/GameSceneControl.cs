@@ -70,6 +70,10 @@ public class GameSceneControl : MonoBehaviour
     //カウントアップ
     private float countup = 0.0f;
     private float timeLimit = 3.0f;
+
+    [SerializeField] GameObject selectButtons;
+    [SerializeField] GameObject betButtons;
+
     private void Start()
     {
         BP = new Dictionary<BetState, PlayCardDeal>();
@@ -173,6 +177,7 @@ public class GameSceneControl : MonoBehaviour
                     }
 
                 }
+
                 break;
             case GameStageProgress.Ending:
                 nowAimPosition = checkPoints[nowWave].Position;//次に移動する位置を選択4
@@ -183,6 +188,10 @@ public class GameSceneControl : MonoBehaviour
                     countup += Time.deltaTime;
                     if (countup >= timeLimit)
                     {
+                        // 不要UIを非表示
+                        this.countDownTimer.gameObject.SetActive(false);
+                        this.selectButtons.SetActive(false);
+                        this.betButtons.SetActive(false);
                         //ステージリザルトへ
                         result.SetFlag(chipGenerator.GetChipNum());
                     }
@@ -226,9 +235,8 @@ public class GameSceneControl : MonoBehaviour
         qWave++;
         
     }
-    void InitClearData(BetState _state )
+    void InitClearData(BetState _state)
     {
-        
         GameClear = true;
 
         clearPulus = BP[_state].GetPulus();

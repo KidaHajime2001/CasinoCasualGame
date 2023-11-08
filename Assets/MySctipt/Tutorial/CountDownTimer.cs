@@ -96,6 +96,10 @@ public class CountDownTimer : MonoBehaviour
 
     void UpdateSpeedMag(int _mag)
     {
+        if(this.speedMagText == null)
+        {
+            return;
+        }
         this.speedMag = _mag;
         this.speedMagText.text = "Å~" + this.speedMag.ToString();
     }

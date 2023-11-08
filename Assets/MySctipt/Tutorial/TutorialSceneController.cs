@@ -157,7 +157,7 @@ public class TutorialSceneController : MonoBehaviour
                         }
 
                         // 時間制限を追加
-                        this.countDownTimer.SetTimer(10.0f);
+                        this.countDownTimer.SetTimer(20.0f);
 
                         this.progress = TutorialProgress.Thinking;
                     }
@@ -353,9 +353,7 @@ public class TutorialSceneController : MonoBehaviour
                         //次の位置へ
                         this.ToNextProgress();
                     }
-
                 }
-
                 break;
 
             case TutorialProgress.Ending:
@@ -370,6 +368,16 @@ public class TutorialSceneController : MonoBehaviour
                     this.deltaTimeCounter += Time.deltaTime;
                     if(this.deltaTimeCounter >= 3.0f)
                     {
+                        // 不要UIを非表示
+                        this.countDownTimer.gameObject.SetActive(false);
+                        for (int i = 0; i < this.selectButtons.Count; ++i)
+                        {
+                            this.selectButtons[i].gameObject.SetActive(false);
+                        }
+                        for (int i = 0; i < this.betButtons.Count; ++i)
+                        {
+                            this.betButtons[i].gameObject.SetActive(false);
+                        }
                         // ステージリザルト
                         result.SetFlag(this.chipGenerator.GetChipNum());
                     }
@@ -422,12 +430,9 @@ public class TutorialSceneController : MonoBehaviour
     void InitClearData(BetState _state)
     {
         this.isGameClear = true;
-
         this.clearPulus = BP[_state].GetPulus();
         this.magnitude = BP[_state].GetMagnitude();
-
         this.bet.ResetBetState();
-
     }
 
     void UpdateDIC()

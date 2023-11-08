@@ -38,7 +38,7 @@ public class Bet : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(betMax);
+        //Debug.Log(betMax);
         text.text = betNum.ToString();
         if (betState == BetState.R)
         {

@@ -25,13 +25,15 @@ public class TutorialSceneController : MonoBehaviour
     }
     [SerializeField] TutorialProgress progress;
     GameStageProgress normalProgress;   // 通常のゲームで使う進捗(カメラの向きのために使用)
+    [System.Serializable]
     public struct DealWave
     {
         public PlayCardDeal dealL;
         public PlayCardDeal dealR;
     }
     Dictionary<BetState, PlayCardDeal> BP;
-    [SerializeField] List<DealWave> dealWave;
+    //Inspectorに複数データを表示するためのクラス
+    [SerializeField] List<DealWave> dealWave = new List<DealWave>();
 
     // キャラクターの移動
     float deltaTimeCounter = 0.0f;
@@ -104,6 +106,7 @@ public class TutorialSceneController : MonoBehaviour
         // 初期コイン枚数の設定(111枚)
 
         this.ToNextProgress();
+        this.UpdateDIC();
     }
 
     // Update is called once per frame
@@ -132,7 +135,6 @@ public class TutorialSceneController : MonoBehaviour
                         this.isTutorial = false;
 
                         this.progress = TutorialProgress.Selecting;
-                        this.normalProgress = GameStageProgress.Thinking;
 
                         this.finger.gameObject.SetActive(true);
                         this.deltaTimeCounter = 0.0f;
@@ -158,8 +160,9 @@ public class TutorialSceneController : MonoBehaviour
                         this.countDownTimer.SetTimer(10.0f);
 
                         this.progress = TutorialProgress.Thinking;
-                        this.normalProgress = GameStageProgress.Thinking;
                     }
+
+                    this.normalProgress = GameStageProgress.Thinking;
                     // カメラを課題ように変更
                     this.camControl.SetMiddle();
                 }
@@ -304,9 +307,6 @@ public class TutorialSceneController : MonoBehaviour
                     this.progress = TutorialProgress.ShowingResult;
                     normalProgress = GameStageProgress.Result;
 
-                    // リザルトの表示が上手くいかないため、スキップするために書いてある
-                    this.ToNextProgress();
-                    
                     // 勝敗をチェックする
                     CheckResult();
                 }
@@ -320,9 +320,6 @@ public class TutorialSceneController : MonoBehaviour
                     // 進捗を結果発表に移す
                     this.progress = TutorialProgress.ShowingResult;
                     normalProgress = GameStageProgress.Result;
-
-                    // リザルトの表示が上手くいかないため、スキップするために書いてある
-                    this.ToNextProgress();
 
                     // 勝敗をチェックする
                     CheckResult();
